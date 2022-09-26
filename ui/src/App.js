@@ -1,36 +1,15 @@
-import React, { useEffect} from 'react';
-import { Grid } from '@mui/material';
-import ProcessCard from './ProcessCard';
-import ProcessContent from './ProcessDetail';
-import axios from 'axios';
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import Process from './Process';
+import Layout from './Layout';
 
 function App() {
-  const [list, setList] = React.useState([]);
-
-  useEffect(() => {
-     axios.get('/getpid', {params: {name: 'emacs'}})
-     .then(res => {
-
-      console.log(res)
-
-     })
-  
-    return () => {
-      
-    }
-  }, [])
-  
-
   return (
-    <Grid container>
-      <Grid item md={4} xs={12}>
-        <ProcessCard />
-      </Grid>
-
-      <Grid item md={6}>
-        <ProcessContent />
-      </Grid>
-    </Grid>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path='/process' element={<Process />} />
+      </Route>
+    </Routes>
   );
 }
 

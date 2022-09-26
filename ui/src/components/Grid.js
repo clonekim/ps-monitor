@@ -2,10 +2,10 @@ import React, { useMemo } from 'react';
 
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
+import 'ag-grid-community/dist/styles/ag-theme-balham.css';
+import 'ag-grid-community/dist/styles/ag-theme-balham-dark.css';
 
-const gridCss = 'ag-theme-alpine';
+const gridCss = 'ag-theme-balham';
 
 function GridWrapper({
   width = '100%',
