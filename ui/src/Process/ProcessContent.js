@@ -2,6 +2,9 @@ import React from 'react';
 import Layout from '../components/Layout';
 import Column from '../components/Column';
 import Grid from '../components/Grid';
+// import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+// import { Button, Box } from '@mui/material';
+// import axios from 'axios';
 
 const environColumns = [{ headerName: 'value', field: 'value', width: 450 }];
 const openFilecolumns = [
@@ -27,32 +30,30 @@ const connectionColumns = [
 function ProcessContent({
   Cmdline,
   Environment,
-  Status,
-  Owner,
-  Terminal,
   OpenFileState,
   Connection,
+  Id,
   Children,
   Ppid,
 }) {
-  console.log('content render!');
+  // const kill = () => {
+  //   if (window.confirm('해당 프로세스를 kill 하겠습니까?')) {
+  //     axios.delete(`/kill/${Id}`).then(res => {});
+  //   }
+  // };
+
   return (
     <>
-      <Layout
-        left={
-          <Column title="Status" head divider value={Status.join(', ')} />
-        }
-        right={<Column title="Ppid" head divider value={Ppid} />}
-      />
+      {/* <Box display="flex" justifyContent="flex-end">
+        <Button
+          onClick={kill}
+          startIcon={<DeleteForeverIcon />}
+          variant="outlined">
+          {`kill ${Id}`}
+        </Button>
+      </Box> */}
 
-      <Layout
-        left={<Column title="Owner" head divider value={Owner} />}
-        right={<Column title="Terminal" head divider value={Terminal} />}
-      />
-
-      <Layout
-        center={<Column title="Cmdline" head divider value={Cmdline} />}
-      />
+      <Layout center={<Column title="Cmdline" border value={Cmdline} />} />
 
       <Layout
         center={
@@ -60,7 +61,7 @@ function ProcessContent({
             <Grid
               rowData={(Environment || []).map(i => ({ value: i }))}
               columns={environColumns}
-              height={300}
+              height={200}
             />
           </Column>
         }
@@ -72,7 +73,7 @@ function ProcessContent({
             <Grid
               rowData={OpenFileState || []}
               columns={openFilecolumns}
-              height={300}
+              height={200}
             />
           </Column>
         }
@@ -84,7 +85,7 @@ function ProcessContent({
             <Grid
               rowData={Connection || []}
               columns={connectionColumns}
-              height={300}
+              height={200}
             />
           </Column>
         }

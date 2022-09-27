@@ -9,7 +9,6 @@ export const useLoading = create(set => ({
   },
 }));
 
-
 export const useTheme = create(
   persist(
     set => ({
@@ -26,6 +25,14 @@ export const useTheme = create(
 export const useProcess = create(set => ({
   list: [],
   content: null,
-  setList: value => set({list: value}),
-  setContent: value => set({content: value}) 
-}))
+  setList: value => set({ list: value }),
+  setContent: value => set({ content: value }),
+}));
+
+export const useAlert = create(set => ({
+  text: null,
+  type: 'info',
+  setAlert: ({ text, type }) => {
+    set({ text, type });
+  },
+}));

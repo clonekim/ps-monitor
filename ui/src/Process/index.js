@@ -1,41 +1,63 @@
-import React, { useEffect } from 'react';
-import { Box, Grid } from '@mui/material';
-import ProcessCard from './ProcessCard';
+import React from 'react';
+import { Box, Stack, IconButton } from '@mui/material';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import ProcessGrid from './ProcessGrid';
 import ProcessContent from './ProcessContent';
 import axios from 'axios';
-import { useProcess } from '../store';
+import { useAlert, useLoading, useProcess, useTheme } from '../store';
 
 function ProcessIndex() {
   const { list, content, setList } = useProcess();
+  const { setLoading } = useLoading();
+  const { mode, setMode } = useTheme();
+  const { setAlert } = useAlert();
 
-  useEffect(() => {
+  const clickHandler = () => {
+    setLoading(true);
     axios
-      .get('/getpid', {
-        params: {
-          name: 'Emacs,Microsoft',
-        },
+      .get('/pid', {
+        params: {},
       })
       .then(res => {
-        setList(res.data);
-      });
+        setList(res.data || []);
+      })
+      .catch(err => {
+        setAlert({ text: err.message, type: 'error' });
+      })
+      .finally(() => setLoading(false));
+  };
 
-    return () => {};
+  const themeToggle = () => {
+    setMode(mode === 'dark' ? 'light' : 'dark');
+  };
+
+  React.useEffect(() => {
+    clickHandler();
   }, []);
 
   return (
-    <Grid container rowSpacing={2}>
-      <Grid item md={4} xs={12}>
-        {list.map(i => (
-          <Box sx={{ p: 1 }} key={i.Id}>
-            <ProcessCard {...i} />
-          </Box>
-        ))}
-      </Grid>
+    <>
+      <Box display="flex" justifyContent="flex-end">
+        <IconButton onClick={clickHandler}>
+          <RefreshIcon />
+        </IconButton>
 
-      <Grid item md={6}>
-        {content && <ProcessContent {...content} />}
-      </Grid>
-    </Grid>
+        <IconButton onClick={themeToggle}>
+          {mode === 'dark' ? <DarkModeIcon /> : <LightModeIcon />}
+        </IconButton>
+      </Box>
+      <Stack direction="column" sx={{ py: 2, px: 5 }} spacing={5}>
+        <Box sx={{ py: 1, px: 2 }}>
+          <ProcessGrid rowData={list} />
+        </Box>
+
+        <Box sx={{ width: '100%' }}>
+          {content && <ProcessContent {...content} />}
+        </Box>
+      </Stack>
+    </>
   );
 }
 

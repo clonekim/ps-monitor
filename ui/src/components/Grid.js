@@ -4,7 +4,7 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham-dark.css';
-
+import { useTheme } from '../store';
 const gridCss = 'ag-theme-balham';
 
 function GridWrapper({
@@ -14,6 +14,7 @@ function GridWrapper({
   columns,
   gridOptions = {},
 }) {
+  const { mode } = useTheme();
   const defaultColDef = useMemo(
     () => ({
       resizable: true,
@@ -31,7 +32,9 @@ function GridWrapper({
   }, []);
 
   return (
-    <div className={gridCss} style={{ width, height }}>
+    <div
+      className={mode === 'light' ? gridCss : `${gridCss}-dark`}
+      style={{ width, height }}>
       <AgGridReact
         rowData={rowData}
         columnDefs={columnsDefs}

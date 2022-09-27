@@ -3,7 +3,6 @@ package main
 import (
 	"embed"
 	"errors"
-	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/nxadm/tail"
@@ -50,7 +49,6 @@ func CreateProc(p *process.Process) Proc {
 	createtime, _ := p.CreateTime()
 	connections, _ := p.Connections()
 	terminal, _ := p.Terminal()
-
 	ppid, _ := p.Ppid()
 
 	return Proc{
@@ -96,7 +94,7 @@ func FindProcess(names []string) []Proc {
 	for _, p := range v {
 		name, _ := p.Name()
 		for _, q := range names {
-			if strings.Contains(name, q) && strings.HasPrefix(name, q) {
+			if strings.Contains(name, q) {
 				response = append(response, CreateProc(p))
 			}
 		}
@@ -140,44 +138,78 @@ func SendError(c *gin.Context, err error) {
 	})
 }
 
-//go:embed static
+//go:embed build
 var bundle embed.FS
 
-//go:embed static/index.html
+//go:embed build/index.html
 var indexTemplate string
 
-func StartHttp(port *int) {
-	bundleFs := http.FS(bundle)
+type embedFileSystem struct {
+	fs http.FileSystem
+}
+
+func (e *embedFileSystem) Open(filepath string) (http.File, error) {
+	return e.fs.Open("build/static" + filepath)
+}
+
+func getTemplate(path string, templateName string, w io.Writer) error {
+	templ, err := template.New(path).Parse(templateName)
+	if err != nil {
+		return err
+	}
+
+	templ.Execute(w, nil)
+	return nil
+}
+
+var bundleFs = http.FS(bundle)
+
+func staticFile(path string, c *gin.Context) {
+	c.FileFromFS("build"+path, bundleFs)
+	c.Status(200)
+}
+
+func StartHttp(port int) {
+
+	if !config.Server.Debug {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
 	r := gin.Default()
-	r.StaticFS("/static", bundleFs)
+	r.StaticFS("/static", &embedFileSystem{fs: bundleFs})
 
 	r.GET("/", func(c *gin.Context) {
-		templ, err := template.New("index").Parse(indexTemplate)
-		if err != nil {
-			c.String(http.StatusInternalServerError, err.Error())
-		}
+		getTemplate("index", indexTemplate, c.Writer)
+	})
 
-		templ.Execute(c.Writer, nil)
+	r.GET("/favicon.ico", func(c *gin.Context) {
+		staticFile(c.Request.RequestURI, c)
+	})
+
+	r.GET("/manifest.json", func(c *gin.Context) {
+		staticFile(c.Request.RequestURI, c)
 
 	})
 
-	r.GET("/getpid", func(c *gin.Context) {
-
-		query := c.Query("name")
-		if query == "" {
-			SendError(c, errors.New("name is required"))
-			return
-		}
-
-		queries := strings.Split(query, ",")
-		c.JSON(http.StatusOK, FindProcess(queries))
-
+	r.GET("/logo512.png", func(c *gin.Context) {
+		staticFile(c.Request.RequestURI, c)
 	})
 
-	r.GET("/read", func(c *gin.Context) {
+	r.GET("/logo192.png", func(c *gin.Context) {
+		staticFile(c.Request.RequestURI, c)
+	})
 
-		query := c.Query("filepath")
+	r.GET("/config", func(c *gin.Context) {
+		c.JSON(http.StatusOK, config)
+	})
+
+	r.GET("/pid", func(c *gin.Context) {
+		c.JSON(http.StatusOK, FindProcess(config.Procs))
+	})
+
+	r.GET("/log", func(c *gin.Context) {
+
+		filepath := c.Query("filepath")
 		size := c.DefaultQuery("size", "200")
 		intSize, err := strconv.ParseInt(size, 10, 64)
 
@@ -186,7 +218,8 @@ func StartHttp(port *int) {
 			return
 		}
 
-		lines, err := GetLastLines(query, intSize)
+		lines, err := GetLastLines(filepath, intSize)
+
 		if err != nil {
 			SendError(c, err)
 			return
@@ -195,16 +228,48 @@ func StartHttp(port *int) {
 		c.JSON(http.StatusOK, lines)
 	})
 
-	r.Run(":" + strconv.Itoa(*port))
+	r.DELETE("/kill/:id", func(c *gin.Context) {
+		id, err := strconv.ParseInt(c.Param("id"), 10, 32)
+		if err != nil {
+			SendError(c, err)
+			return
+		}
+
+		exist, err1 := process.PidExists(int32(id))
+
+		if err1 != nil {
+			SendError(c, err)
+			return
+		}
+
+		if !exist {
+			fmt.Printf("Pid:%d is not exist", id)
+			c.Status(http.StatusNotFound)
+			return
+
+		}
+
+		p := process.Process{
+			Pid: int32(id),
+		}
+
+		err2 := p.Kill()
+
+		if err2 != nil {
+			SendError(c, err)
+			return
+		}
+
+		c.Status(http.StatusNoContent)
+	})
+
+	r.Run(":" + strconv.Itoa(port))
 }
 
-func main() {
-	flag.Usage = func() {
-		fmt.Fprintln(os.Stderr, "Usage: gops")
-		fmt.Fprintln(os.Stderr, "--port=number (default 4900)")
-	}
+var config *Config
 
-	port := flag.Int("port", 4900, "--port")
-	flag.Parse()
-	StartHttp(port)
+func main() {
+	config = GetConfig()
+	fmt.Printf("server starting on %d\n", config.Server.Port)
+	StartHttp(config.Server.Port)
 }

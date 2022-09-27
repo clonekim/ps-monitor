@@ -1,4 +1,4 @@
-module psutil
+module pshttp
 
 go 1.19
 
@@ -6,6 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/nxadm/tail v1.4.8
 	github.com/shirou/gopsutil/v3 v3.22.8
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
