@@ -32,7 +32,7 @@ export const useProcess = create(set => ({
 export const useAlert = create(set => ({
   text: null,
   type: 'info',
-  setAlert: ({ text, type }) => {
+  setAlert: ({ text = 'Internal Server Error', type }) => {
     set({ text, type });
   },
 }));

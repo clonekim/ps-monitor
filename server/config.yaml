@@ -3,9 +3,9 @@ server:
   release: true
 
 procs:
-  - java
+  - xjava
   - Emacs
 
 logs:
-  - /var/log/system.log
+  - /var/log/systemaa.log
   - /var/log/daily.out

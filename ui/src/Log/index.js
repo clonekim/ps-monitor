@@ -17,12 +17,17 @@ function Log() {
 
   const fetchLog = filepath => {
     console.log('fetch ->', filepath);
-    axios.get('/log', { params: { filepath } }).then(res => {
-      setLogs(state => ({
-        ...state,
-        [filepath]: res.data.map(i => ({ value: i })),
-      }));
-    });
+    axios
+      .get('/log', { params: { filepath } })
+      .then(res => {
+        setLogs(state => ({
+          ...state,
+          [filepath]: res.data.map(i => ({ value: i })),
+        }));
+      })
+      .catch(err => {
+        setAlert({ text: err.message, type: 'error' });
+      });
   };
 
   React.useEffect(() => {
@@ -54,7 +59,11 @@ function Log() {
               </Box>
 
               <Column title={value} head>
-                <Grid rowData={logs[value]} columns={columns} height={300} />
+                <Grid
+                  rowData={logs[value] || []}
+                  columns={columns}
+                  height={300}
+                />
               </Column>
             </>
           }

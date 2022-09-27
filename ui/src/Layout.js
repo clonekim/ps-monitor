@@ -29,6 +29,7 @@ function Layout() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <ProgressHelper show={show} />
+      <Toaster />
       <Box>
         <Tabs value={value}>
           <Tab label="프로세스" value="1" onClick={() => onClick('/', '1')} />
@@ -39,7 +40,6 @@ function Layout() {
       <Box sx={{ p: 1 }}>
         <Outlet />
       </Box>
-      <Toaster />
     </ThemeProvider>
   );
 }

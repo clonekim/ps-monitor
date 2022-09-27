@@ -188,7 +188,6 @@ func StartHttp(port int) {
 
 	r.GET("/manifest.json", func(c *gin.Context) {
 		staticFile(c.Request.RequestURI, c)
-
 	})
 
 	r.GET("/logo512.png", func(c *gin.Context) {

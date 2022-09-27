@@ -4,14 +4,14 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function Toaster() {
-  const { type, text, setText } = useAlert();
+  const { type, text, setAlert } = useAlert();
 
   React.useEffect(() => {
     if (text) {
       toast(text, {
         position: 'bottom-right',
         type,
-        onClose: () => setText({ text: null, type: null }),
+        onClose: () => setAlert({ text: null, type: null }),
       });
     }
   }, [text]);
