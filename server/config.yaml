@@ -3,9 +3,10 @@ server:
   release: true
 
 procs:
-  - xjava
-  - Emacs
+  - java
+  - emacs
+  - Chrome
 
 logs:
-  - /var/log/systemaa.log
+  - /var/log/system.log
   - /var/log/daily.out

@@ -42,7 +42,7 @@ function Log() {
       .then(res => {
         setLogs(state => ({
           ...state,
-          [filepath]: res.data.map(i => ({ value: i })),
+          [filepath]: (res.data || []).map(i => ({ value: i })),
         }));
       })
       .catch(err => {
@@ -73,7 +73,7 @@ function Log() {
     <>
       <DisplayBox>
         <FormControl>
-          <Select label="Log Size" onChange={changeSize}>
+          <Select label='Log Size' onChange={changeSize}>
             {sizes.map(num => (
               <MenuItem value={num} key={num}>
                 {num}
@@ -88,7 +88,7 @@ function Log() {
           key={value}
           center={
             <>
-              <Box display="flex" justifyContent="flex-end">
+              <Box display='flex' justifyContent='flex-end'>
                 <IconButton onClick={() => fetchLog(value)}>
                   <RefreshIcon />
                 </IconButton>

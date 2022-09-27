@@ -125,7 +125,11 @@ func GetLastLines(filepath string, size int64) ([]string, error) {
 	var lines []string
 
 	for line := range t.Lines {
-		lines = append(lines, line.Text)
+		text := line.Text
+		
+		if text != "" {
+			lines = append(lines, line.Text)
+		}
 	}
 
 	return lines, nil
@@ -181,6 +185,11 @@ func StartHttp(port int) {
 	r.GET("/", func(c *gin.Context) {
 		getTemplate("index", indexTemplate, c.Writer)
 	})
+
+    r.GET("/Log", func(c *gin.Context) {
+		getTemplate("index", indexTemplate, c.Writer)
+	})
+
 
 	r.GET("/favicon.ico", func(c *gin.Context) {
 		staticFile(c.Request.RequestURI, c)
