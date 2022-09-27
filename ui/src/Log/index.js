@@ -1,5 +1,14 @@
 import React from 'react';
-import { Box, IconButton } from '@mui/material';
+import {
+  Box,
+  IconButton,
+  Select,
+  MenuItem,
+  FormControl,
+  FormHelperText,
+  styled,
+  Stack,
+} from '@mui/material';
 
 import RefreshIcon from '@mui/icons-material/Refresh';
 import Layout from '../components/Layout';
@@ -10,15 +19,26 @@ import { useAlert } from '../store';
 
 const columns = [{ headerName: 'log', field: 'value', width: 800 }];
 
+const sizes = [100, 200, 300, 400, 500, 800, 1000];
+
+const DisplayBox = styled(Stack)`
+  position: absolute;
+  right: 26px;
+  top: 10px;
+  z-index: 9;
+  background: trasparent;
+`;
+
 function Log() {
   const [logpath, setLogpath] = React.useState([]);
   const [logs, setLogs] = React.useState({});
+  const [logSize, setLogSize] = React.useState(200);
   const { setAlert } = useAlert();
 
   const fetchLog = filepath => {
     console.log('fetch ->', filepath);
     axios
-      .get('/log', { params: { filepath } })
+      .get('/log', { params: { filepath, size: logSize } })
       .then(res => {
         setLogs(state => ({
           ...state,
@@ -45,8 +65,24 @@ function Log() {
     logpath.forEach(v => fetchLog(v));
   }, [logpath]);
 
+  const changeSize = e => {
+    setLogSize(e.target.value);
+  };
+
   return (
     <>
+      <DisplayBox>
+        <FormControl>
+          <Select label="Log Size" onChange={changeSize}>
+            {sizes.map(num => (
+              <MenuItem value={num} key={num}>
+                {num}
+              </MenuItem>
+            ))}
+          </Select>
+          <FormHelperText>log size </FormHelperText>
+        </FormControl>
+      </DisplayBox>
       {logpath.map(value => (
         <Layout
           key={value}
