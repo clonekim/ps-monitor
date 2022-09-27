@@ -12,9 +12,11 @@ const columns = [
   {
     headerName: 'Status',
     field: 'status',
+    width: 120,
     valueFormatter: ({ data }) => data.Status.join(', '),
   },
-  { headerName: 'CreateTime', field: 'CreateTime' },
+  { headerName: 'Terminal', field: 'Terminal', width: 80 },
+  { headerName: 'CreateTime', field: 'CreateTime', width: 190 },
   {
     headerName: 'Children',
     valueFormatter: ({ data }) => (data.Children || []).length,
