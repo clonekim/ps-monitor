@@ -1,11 +1,11 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"embed"
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/nxadm/tail"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/net"
 	"github.com/shirou/gopsutil/v3/process"
@@ -13,6 +13,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 	"time"
@@ -23,7 +24,7 @@ type Proc struct {
 	Id            int32
 	Ppid          int32
 	Owner         string
-	Cmdline       string
+	Cmdline       []string
 	Environment   []Environment
 	Status        []string
 	Cwd           string
@@ -52,7 +53,7 @@ func Time2String(value int64) string {
 func CreateProc(p *process.Process) Proc {
 	name, _ := p.Name()
 	username, _ := p.Username()
-	cmdline, _ := p.Cmdline()
+	cmdline, _ := p.CmdlineSlice()
 	envs, _ := p.Environ()
 	status, _ := p.Status()
 	openfiles, _ := p.OpenFiles()
@@ -129,27 +130,26 @@ func FindProcess(names []string) []Proc {
 
 func GetLastLines(filepath string, size int64) ([]string, error) {
 
-	stat, err := os.Stat(filepath)
+	tail, buf := exec.Command("tail", fmt.Sprintf("-n%d", size), filepath), new(bytes.Buffer)
+	path := make([]string, 1)
+	path = append(path, os.Getenv("PATH"))
+	tail.Env = path
 
-	if errors.Is(err, os.ErrNotExist) {
+	tail.Stdout = buf
+	err := tail.Run()
+
+	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
-	seek := tail.SeekInfo{
-		Offset: stat.Size() - size,
-		Whence: io.SeekCurrent,
-	}
-
-	var t, err1 = tail.TailFile(filepath, tail.Config{Location: &seek})
-
-	if err1 != nil {
-		return nil, err
-	}
-
+	s := bufio.NewScanner(buf)
 	var lines []string
-
-	for line := range t.Lines {
-		lines = append(lines, line.Text)
+	for s.Scan() {
+		text := s.Text()
+		if text != "" {
+			lines = append(lines, s.Text())
+		}
 	}
 
 	return lines, nil

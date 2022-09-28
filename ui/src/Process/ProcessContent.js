@@ -6,7 +6,13 @@ import Grid from '../components/Grid';
 // import { Button, Box } from '@mui/material';
 // import axios from 'axios';
 
-const environColumns = [{ headerName: 'value', field: 'value', width: 450 }];
+const cmdColumns = [{ headerName: 'Value', field: 'value', width: 450 }];
+
+const environColumns = [
+  { headerName: 'Key', field: 'Key', width: 450 },
+  { headerName: 'Value', field: 'Value', width: 450 },
+];
+
 const openFilecolumns = [
   { headerName: 'Path', field: 'path', width: 250 },
   { headerName: 'Fd', field: 'fd' },
@@ -53,13 +59,23 @@ function ProcessContent({
         </Button>
       </Box> */}
 
-      <Layout center={<Column title="Cmdline" border value={Cmdline} />} />
+      <Layout
+        center={
+          <Column title="Cmdline">
+            <Grid
+              rowData={(Cmdline || []).map(i => ({ value: i }))}
+              columns={cmdColumns}
+              height={200}
+            />
+          </Column>
+        }
+      />
 
       <Layout
         center={
           <Column title="Environments">
             <Grid
-              rowData={(Environment || []).map(i => ({ value: i }))}
+              rowData={Environment || []}
               columns={environColumns}
               height={200}
             />

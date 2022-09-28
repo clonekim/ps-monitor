@@ -5,9 +5,9 @@ import Grid from '../components/Grid';
 import Column from '../components/Column';
 
 const columns = [
-  { headerName: 'Name', field: 'Name' },
-  { headerName: 'Pid', field: 'Id', width: 100 },
-  { headerName: 'Ppid', field: 'Ppid', width: 100 },
+  { headerName: 'Name', field: 'Name', width: 130 },
+  { headerName: 'Pid', field: 'Id', width: 80 },
+  { headerName: 'Ppid', field: 'Ppid', width: 80 },
   { headerName: 'Owner', field: 'Owner', width: 100 },
   {
     headerName: 'Status',
@@ -15,8 +15,11 @@ const columns = [
     width: 120,
     valueFormatter: ({ data }) => data.Status.join(', '),
   },
+  { headerName: 'Background', field: 'Background', width: 100 },
+  { headerName: 'Forground', field: 'Forground', width: 90 },
   { headerName: 'Terminal', field: 'Terminal', width: 80 },
-  { headerName: 'CreateTime', field: 'CreateTime', width: 190 },
+  { headerName: 'CWD', field: 'Cwd', width: 80 },
+  { headerName: 'CreateTime', field: 'CreateTime', width: 160 },
   {
     headerName: 'Children',
     valueFormatter: ({ data }) => (data.Children || []).length,
@@ -55,7 +58,7 @@ function ProcessGrid({ rowData }) {
       />
       {children.length > 0 && (
         <Box sx={{ py: 2 }}>
-          <Column title='Children'>
+          <Column title="Children">
             <Grid
               rowData={children}
               columns={columns}
