@@ -82,19 +82,26 @@ func CreateProc(p *process.Process) Proc {
 			for _, s := range envs {
 				if s != "" {
 
-					strs := strings.Split(s, "=")
+					s := strings.Split(s, "=")
 					list = append(list, Environment{
-						Key:   strs[0],
-						Value: strs[1],
+						Key:   s[0],
+						Value: s[1],
 					})
 				}
 			}
 			return list
 		}(),
-		Status:        status,
-		Terminal:      terminal,
-		OpenFilesStat: openfiles,
-		CreateTime:    Time2String(createtime),
+		Status:   status,
+		Terminal: terminal,
+
+		OpenFilesStat: func() []process.OpenFilesStat {
+			if openfiles == nil {
+				return make([]process.OpenFilesStat, 0)
+			}
+			return openfiles
+		}(),
+
+		CreateTime: Time2String(createtime),
 
 		Connection: connections,
 		Children: func() []Proc {

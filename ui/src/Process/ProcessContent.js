@@ -9,8 +9,8 @@ import Grid from '../components/Grid';
 const cmdColumns = [{ headerName: 'Value', field: 'value', width: 450 }];
 
 const environColumns = [
-  { headerName: 'Key', field: 'Key', width: 450 },
-  { headerName: 'Value', field: 'Value', width: 450 },
+  { headerName: 'Key', field: 'Key', width: 200 },
+  { headerName: 'Value', field: 'Value', width: 300 },
 ];
 
 const openFilecolumns = [
@@ -21,9 +21,20 @@ const openFilecolumns = [
 const connectionColumns = [
   { headerName: 'Fd', field: 'fd', width: 50 },
   { headerName: 'Family', field: 'family', width: 80 },
-  { headerName: 'Localaddr', field: 'localaddr.port', width: 100 },
-  { headerName: 'Remortladdr', field: 'remoteaddr.port', width: 100 },
-  { headerName: 'Status', field: 'status', width: 150 },
+  {
+    headerName: 'Localaddr',
+    field: 'localaddr',
+    width: 130,
+    valueFormatter: ({ data }) => `${data.localaddr.ip}:${data.localaddr.port}`,
+  },
+  {
+    headerName: 'Remortladdr',
+    field: 'remoteaddr',
+    width: 130,
+    valueFormatter: ({ data }) =>
+      `${data.remoteaddr.ip}:${data.remoteaddr.port}`,
+  },
+  { headerName: 'Status', field: 'status', width: 110 },
   {
     headerName: 'uids',
     field: 'uids',
@@ -34,12 +45,12 @@ const connectionColumns = [
 ];
 
 function ProcessContent({
-  Cmdline,
-  Environment,
-  OpenFileState,
-  Connection,
+  Cmdline = [],
+  Environment = [],
+  OpenFileState = [],
+  Connection = [],
   Id,
-  Children,
+  Children = [],
   Ppid,
 }) {
   // const kill = () => {
@@ -63,7 +74,7 @@ function ProcessContent({
         center={
           <Column title="Cmdline">
             <Grid
-              rowData={(Cmdline || []).map(i => ({ value: i }))}
+              rowData={Cmdline.map(i => ({ value: i }))}
               columns={cmdColumns}
               height={200}
             />
@@ -74,11 +85,7 @@ function ProcessContent({
       <Layout
         center={
           <Column title="Environments">
-            <Grid
-              rowData={Environment || []}
-              columns={environColumns}
-              height={200}
-            />
+            <Grid rowData={Environment} columns={environColumns} height={200} />
           </Column>
         }
       />
@@ -87,7 +94,7 @@ function ProcessContent({
         center={
           <Column title="Open File Stat">
             <Grid
-              rowData={OpenFileState || []}
+              rowData={OpenFileState}
               columns={openFilecolumns}
               height={200}
             />
@@ -99,7 +106,7 @@ function ProcessContent({
         center={
           <Column title="Connection">
             <Grid
-              rowData={Connection || []}
+              rowData={Connection}
               columns={connectionColumns}
               height={200}
             />
