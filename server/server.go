@@ -282,6 +282,6 @@ var config *Config
 
 func main() {
 	config = GetConfig()
-	fmt.Printf("server starting on %d\n", config.Server.Port)
+	fmt.Printf("server starting on %d", config.Server.Port)
 	StartHttp(config.Server.Port)
 }

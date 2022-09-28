@@ -1,6 +1,6 @@
 server:
   port: 4900
-  release: true
+  debug: true
 
 procs:
   - java
