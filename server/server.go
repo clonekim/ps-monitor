@@ -98,7 +98,7 @@ func CreateProc(p *process.Process) Proc {
 
 		Connection: connections,
 		Children: func() []Proc {
-			var children []Proc
+			children := make([]Proc, 0)
 
 			pp, _ := p.Children()
 			for _, v := range pp {
