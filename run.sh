@@ -9,6 +9,7 @@ args="$1"
 
 case $args in
   start)
+    echo "starting server"
 	  nohup pshttp >console.log 2>&1 &
 	  echo $! > pid
     ;;
