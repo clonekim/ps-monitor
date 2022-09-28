@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/nxadm/tail"
+	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/net"
 	"github.com/shirou/gopsutil/v3/process"
 	"html/template"
@@ -23,13 +24,22 @@ type Proc struct {
 	Ppid          int32
 	Owner         string
 	Cmdline       string
-	Environment   []string
+	Environment   []Environment
 	Status        []string
+	Cwd           string
 	Terminal      string
 	OpenFilesStat []process.OpenFilesStat
 	CreateTime    string
 	Children      []Proc
 	Connection    []net.ConnectionStat
+	Background    bool
+	Forground     bool
+	CpuTimes      *cpu.TimesStat
+}
+
+type Environment struct {
+	Key   string
+	Value string
 }
 
 func Time2String(value int64) string {
@@ -50,21 +60,35 @@ func CreateProc(p *process.Process) Proc {
 	connections, _ := p.Connections()
 	terminal, _ := p.Terminal()
 	ppid, _ := p.Ppid()
+	cwd, _ := p.Cwd()
+	background, _ := p.Background()
+	forground, _ := p.Foreground()
+	cputimes, _ := p.Times()
 
 	return Proc{
-		Name:    name,
-		Id:      p.Pid,
-		Ppid:    ppid,
-		Owner:   username,
-		Cmdline: cmdline,
-		Environment: func() []string {
-			strs := make([]string, 0)
+		Name:       name,
+		Id:         p.Pid,
+		Ppid:       ppid,
+		Owner:      username,
+		Cmdline:    cmdline,
+		Cwd:        cwd,
+		Background: background,
+		Forground:  forground,
+		CpuTimes:   cputimes,
+		Environment: func() []Environment {
+			list := make([]Environment, 0)
+
 			for _, s := range envs {
 				if s != "" {
-					strs = append(strs, s)
+
+					strs := strings.Split(s, "=")
+					list = append(list, Environment{
+						Key:   strs[0],
+						Value: strs[1],
+					})
 				}
 			}
-			return strs
+			return list
 		}(),
 		Status:        status,
 		Terminal:      terminal,
@@ -89,7 +113,7 @@ func FindProcess(names []string) []Proc {
 
 	v, _ := process.Processes()
 
-	var response []Proc
+	response := make([]Proc, 0)
 
 	for _, p := range v {
 		name, _ := p.Name()
@@ -125,11 +149,7 @@ func GetLastLines(filepath string, size int64) ([]string, error) {
 	var lines []string
 
 	for line := range t.Lines {
-		text := line.Text
-		
-		if text != "" {
-			lines = append(lines, line.Text)
-		}
+		lines = append(lines, line.Text)
 	}
 
 	return lines, nil
@@ -168,9 +188,9 @@ func getTemplate(path string, templateName string, w io.Writer) error {
 
 var bundleFs = http.FS(bundle)
 
-func staticFile(path string, c *gin.Context) {
-	c.FileFromFS("build"+path, bundleFs)
-	c.Status(200)
+func staticFile(c *gin.Context) {
+	c.FileFromFS("build"+c.Request.RequestURI, bundleFs)
+	c.Status(http.StatusOK)
 }
 
 func StartHttp(port int) {
@@ -186,26 +206,10 @@ func StartHttp(port int) {
 		getTemplate("index", indexTemplate, c.Writer)
 	})
 
-    r.GET("/Log", func(c *gin.Context) {
-		getTemplate("index", indexTemplate, c.Writer)
-	})
-
-
-	r.GET("/favicon.ico", func(c *gin.Context) {
-		staticFile(c.Request.RequestURI, c)
-	})
-
-	r.GET("/manifest.json", func(c *gin.Context) {
-		staticFile(c.Request.RequestURI, c)
-	})
-
-	r.GET("/logo512.png", func(c *gin.Context) {
-		staticFile(c.Request.RequestURI, c)
-	})
-
-	r.GET("/logo192.png", func(c *gin.Context) {
-		staticFile(c.Request.RequestURI, c)
-	})
+	r.GET("/favicon.ico", staticFile)
+	r.GET("/manifest.json", staticFile)
+	r.GET("/logo512.png", staticFile)
+	r.GET("/logo192.png", staticFile)
 
 	r.GET("/config", func(c *gin.Context) {
 		c.JSON(http.StatusOK, config)
