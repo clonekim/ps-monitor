@@ -213,6 +213,10 @@ func StartHttp(port int) {
 		getTemplate("index", indexTemplate, c.Writer)
 	})
 
+	r.GET("/Log", func(c *gin.Context) {
+		getTemplate("index", indexTemplate, c.Writer)
+	})
+
 	r.GET("/favicon.ico", staticFile)
 	r.GET("/manifest.json", staticFile)
 	r.GET("/logo512.png", staticFile)

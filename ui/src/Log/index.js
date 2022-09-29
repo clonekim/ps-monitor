@@ -46,7 +46,12 @@ function Log() {
           [filepath]: (res.data || []).map(i => ({ value: i })),
         }));
 
-        if (gridRef.current && gridRef.current[filepath] && res.data.length > 2)
+        if (
+          gridRef.current &&
+          gridRef.current[filepath] &&
+          res.data &&
+          res.data.length > 2
+        )
           gridRef.current[filepath].ensureIndexVisible(res.data.length - 1);
       })
       .catch(err => {
@@ -78,7 +83,7 @@ function Log() {
       <DisplayBox>
         <FormControl>
           <Select
-            label="Log Size"
+            label='Log Size'
             sx={{ p: 0 }}
             onChange={changeSize}
             value={logSize}>
@@ -91,16 +96,16 @@ function Log() {
           <FormHelperText>log size </FormHelperText>
         </FormControl>
       </DisplayBox>
-      {logpath.map(value => (
+      {logpath.map((value, idx) => (
         <Layout
           key={value}
           center={
             <>
-              <Box display="flex" justifyContent="flex-end">
+              <Box display='flex' justifyContent='flex-end'>
                 <IconButton onClick={() => fetchLog(value)}>
                   <RefreshIcon />
                 </IconButton>
-                <ThemeToggle />
+                {idx == 0 && <ThemeToggle />}
               </Box>
 
               <Column title={value} head>
