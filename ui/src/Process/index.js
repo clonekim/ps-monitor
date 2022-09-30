@@ -3,6 +3,7 @@ import { Box, Stack, IconButton } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import ProcessGrid from './ProcessGrid';
 import ProcessContent from './ProcessContent';
+import Pstree from './Pstree';
 import ThemeToggle from '../components/ThemeToggle';
 import axios from 'axios';
 import { useAlert, useLoading, useProcess } from '../store';
@@ -11,6 +12,7 @@ function ProcessIndex() {
   const { list, content, setList } = useProcess();
   const { setLoading } = useLoading();
   const { setAlert } = useAlert();
+  const pstree = React.useState([]);
 
   const clickHandler = () => {
     setLoading(true);
@@ -31,6 +33,14 @@ function ProcessIndex() {
     clickHandler();
   }, []);
 
+  React.useEffect(() => {
+    if (content) {
+      axios.get(`/pstree/${content.Ppid}`).then(res => {
+        pstree[1](res.data);
+      });
+    }
+  }, [content]);
+
   return (
     <>
       <Box display="flex" justifyContent="flex-end">
@@ -46,9 +56,11 @@ function ProcessIndex() {
           <ProcessGrid rowData={list} />
         </Box>
 
-        <Box sx={{ width: '100%' }}>
-          {content && <ProcessContent {...content} />}
-        </Box>
+        {content && <ProcessContent {...content} />}
+
+        {content && pstree[0] && (
+          <Pstree id={content.Ppid} rowData={pstree[0]} />
+        )}
       </Stack>
     </>
   );

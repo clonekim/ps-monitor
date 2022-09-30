@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import './Grid.css';
 
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';

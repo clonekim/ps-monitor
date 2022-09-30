@@ -4,7 +4,8 @@ server:
 
 procs:
   - java
-  - emacs
+  - emacs28
+  - nvim
 
 logs:
   - /var/log/system.log

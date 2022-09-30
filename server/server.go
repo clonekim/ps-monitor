@@ -43,6 +43,10 @@ type Environment struct {
 	Value string
 }
 
+type PsTree struct {
+	Row string `json:"row"`
+}
+
 func Time2String(value int64) string {
 	loc, _ := time.LoadLocation("Asia/Seoul")
 	v := time.UnixMilli(value)
@@ -51,6 +55,7 @@ func Time2String(value int64) string {
 }
 
 func CreateProc(p *process.Process) Proc {
+
 	name, _ := p.Name()
 	username, _ := p.Username()
 	cmdline, _ := p.CmdlineSlice()
@@ -126,13 +131,44 @@ func FindProcess(names []string) []Proc {
 	for _, p := range v {
 		name, _ := p.Name()
 		for _, q := range names {
-			if strings.Contains(name, q) {
+			if strings.Compare(name, q) == 0 {
 				response = append(response, CreateProc(p))
 			}
 		}
 	}
 
 	return response
+}
+
+func GetPstree(id string) ([]PsTree, error) {
+	pstrees := make([]PsTree, 0)
+
+	if id == "1" {
+		return pstrees, nil
+	}
+
+	cmd, buf := exec.Command("pstree", "-pln", "-a", id), new(bytes.Buffer)
+	path := make([]string, 1)
+	path = append(path, os.Getenv("PATH"))
+	cmd.Env = path
+	cmd.Stdout = buf
+	err := cmd.Run()
+
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	s := bufio.NewScanner(buf)
+
+	for s.Scan() {
+		pstrees = append(pstrees, PsTree{
+			Row: s.Text(),
+		})
+	}
+
+	return pstrees, nil
+
 }
 
 func GetLastLines(filepath string, size int64) ([]string, error) {
@@ -155,7 +191,7 @@ func GetLastLines(filepath string, size int64) ([]string, error) {
 	for s.Scan() {
 		text := s.Text()
 		if text != "" {
-			lines = append(lines, s.Text())
+			lines = append(lines, s.Text()+"\n")
 		}
 	}
 
@@ -228,6 +264,18 @@ func StartHttp(port int) {
 
 	r.GET("/pid", func(c *gin.Context) {
 		c.JSON(http.StatusOK, FindProcess(config.Procs))
+	})
+
+	r.GET("/pstree/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		tree, err := GetPstree(id)
+
+		if err != nil {
+			SendError(c, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, tree)
 	})
 
 	r.GET("/log", func(c *gin.Context) {

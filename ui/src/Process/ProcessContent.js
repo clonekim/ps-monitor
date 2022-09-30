@@ -2,6 +2,7 @@ import React from 'react';
 import Layout from '../components/Layout';
 import Column from '../components/Column';
 import Grid from '../components/Grid';
+import { Grid as GridLayout } from '@mui/material'
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 // import { Button, Box } from '@mui/material';
 // import axios from 'axios';
@@ -70,49 +71,65 @@ function ProcessContent({
         </Button>
       </Box> */}
 
-      <Layout
-        center={
-          <Column title="Cmdline">
-            <Grid
-              rowData={Cmdline.map(i => ({ value: i }))}
-              columns={cmdColumns}
-              height={200}
-            />
-          </Column>
-        }
-      />
+      <GridLayout container>
+        <GridLayout item xs={6} sm={6} md={12}>
+          <Layout
+            center={
+              <Column title="Cmdline">
+                <Grid
+                  rowData={Cmdline.map(i => ({ value: i }))}
+                  columns={cmdColumns}
+                  height={200}
+                />
+              </Column>
+            }
+          />
 
-      <Layout
-        center={
-          <Column title="Environments">
-            <Grid rowData={Environment} columns={environColumns} height={200} />
-          </Column>
-        }
-      />
+        </GridLayout>
 
-      <Layout
-        center={
-          <Column title="Open File Stat">
-            <Grid
-              rowData={OpenFileState}
-              columns={openFilecolumns}
-              height={200}
-            />
-          </Column>
-        }
-      />
+        <GridLayout item xs={6} sm={6} md={12}>
 
-      <Layout
-        center={
-          <Column title="Connection">
-            <Grid
-              rowData={Connection}
-              columns={connectionColumns}
-              height={200}
-            />
-          </Column>
-        }
-      />
+          <Layout
+            center={
+              <Column title="Environments">
+                <Grid rowData={Environment} columns={environColumns} height={200} />
+              </Column>
+            }
+          />
+        </GridLayout>
+
+        <GridLayout item xs={6} sm={6} md={12}>
+          <Layout
+            center={
+              <Column title="Open File Stat">
+                <Grid
+                  rowData={OpenFileState}
+                  columns={openFilecolumns}
+                  height={200}
+                />
+              </Column>
+            }
+          />
+
+        </GridLayout>
+        <GridLayout item xs={6} sm={6} md={12}>
+
+          <Layout
+            center={
+              <Column title="Connection">
+                <Grid
+                  rowData={Connection}
+                  columns={connectionColumns}
+                  height={200}
+                />
+              </Column>
+            }
+          />
+        </GridLayout>
+      </GridLayout>
+
+
+
     </>
   );
 }

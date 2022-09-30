@@ -83,7 +83,7 @@ function Log() {
       <DisplayBox>
         <FormControl>
           <Select
-            label='Log Size'
+            label="Log Size"
             sx={{ p: 0 }}
             onChange={changeSize}
             value={logSize}>
@@ -101,11 +101,11 @@ function Log() {
           key={value}
           center={
             <>
-              <Box display='flex' justifyContent='flex-end'>
+              <Box display="flex" justifyContent="flex-end">
                 <IconButton onClick={() => fetchLog(value)}>
                   <RefreshIcon />
                 </IconButton>
-                {idx == 0 && <ThemeToggle />}
+                {idx === 0 && <ThemeToggle />}
               </Box>
 
               <Column title={value} head>
