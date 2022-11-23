@@ -36,8 +36,6 @@ function GridWrapper({
     );
   }, []);
 
-  gridOptions.noRowsOverlayComponent = CustomOverlay;
-
   return (
     <div
       className={mode === 'light' ? gridCss : `${gridCss}-dark`}
@@ -47,6 +45,7 @@ function GridWrapper({
         columnDefs={columnsDefs}
         defaultColDef={defaultColDef}
         gridOptions={gridOptions}
+        noRowsOverlayComponent={CustomOverlay}
       />
     </div>
   );

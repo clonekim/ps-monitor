@@ -17,6 +17,17 @@ function useApi() {
       .finally(() => setLoading(false));
   };
 
+  const logCommand = () => {};
+
+  const configCommand = async () => {
+    try {
+      const { data } = await axios.get('/config');
+      return data;
+    } catch (err) {
+      setAlert({ text: err.message, type: 'error' });
+    }
+  };
+
   return {
     psCommand,
   };

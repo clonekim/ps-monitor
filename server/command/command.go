@@ -27,8 +27,8 @@ type Proc struct {
 	Terminal    string               `json:"tty"`
 	CreateTime  string               `json:"createTime"`
 	Connection  []net.ConnectionStat `json:"connection"`
-	CpuPersent  string               `json:"cpuPersent"`
-	MemPersent  string               `json:"memPersent"`
+	CpuPercent  string               `json:"cpuPercent"`
+	MemPercent  string               `json:"memPercent"`
 }
 
 type Environment struct {
@@ -36,9 +36,14 @@ type Environment struct {
 	Value string `json:"value"`
 }
 
+type Log struct {
+	Value string `json:"value"`
+}
+
 type Logger struct {
-	Logs     []string `json:"logs"`
-	FilePath string   `json:"filePath"`
+	Logs     []Log  `json:"logs"`
+	FilePath string `json:"filepath"`
+	Parsed   string `json:"parsed"`
 }
 
 func Time2String(value int64) string {
@@ -48,10 +53,8 @@ func Time2String(value int64) string {
 	return v.Format("2006-01-02 15:04:05")
 }
 
-var plist []Proc
-
-func CreateProc(names []string) {
-	plist = make([]Proc, 0)
+func CreateProc(names []string) []Proc {
+	plist := make([]Proc, 0)
 
 	for _, i := range names {
 		n := strings.Split(i, ",")
@@ -61,6 +64,8 @@ func CreateProc(names []string) {
 			Name:  n[1],
 		})
 	}
+
+	return plist
 
 }
 
@@ -103,8 +108,8 @@ func UpdateProc(proc *Proc, p *process.Process) {
 	proc.Status = status
 	proc.Terminal = terminal
 	proc.CreateTime = Time2String(createtime)
-	proc.CpuPersent = fmt.Sprintf("%.2f", cpuPercent)
-	proc.MemPersent = fmt.Sprintf("%.2f", memPercent)
+	proc.CpuPercent = fmt.Sprintf("%.2f", cpuPercent)
+	proc.MemPercent = fmt.Sprintf("%.2f", memPercent)
 
 	if connections == nil {
 		proc.Connection = make([]net.ConnectionStat, 0)
@@ -113,8 +118,9 @@ func UpdateProc(proc *Proc, p *process.Process) {
 	}
 }
 
-func FindProcess() *[]Proc {
+func FindProcess(labels []string) *[]Proc {
 
+	plist := CreateProc(labels)
 	v, _ := process.Processes()
 
 	for _, p := range v {
@@ -165,6 +171,8 @@ func KillProcess(id int) error {
 
 func Output(commands string) ([]string, error) {
 
+	log.Println(commands)
+
 	cmd, buf := exec.Command("bash", "-c", commands), new(bytes.Buffer)
 	envs := make([]string, 1)
 	envs = append(envs, os.Getenv("PATH"))
@@ -180,7 +188,7 @@ func Output(commands string) ([]string, error) {
 	}
 
 	s := bufio.NewScanner(buf)
-	var lines []string
+	lines := make([]string, 0)
 	for s.Scan() {
 		text := s.Text()
 		if text != "" {
@@ -208,7 +216,7 @@ func GetLastLines(filepath string, size int) ([]string, error) {
 	for s.Scan() {
 		text := s.Text()
 		if text != "" {
-			lines = append(lines, s.Text()+"\n")
+			lines = append(lines, text)
 		}
 	}
 	return lines, nil

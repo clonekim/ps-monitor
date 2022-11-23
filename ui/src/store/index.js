@@ -13,10 +13,12 @@ export const useTheme = create(
   persist(
     set => ({
       mode: 'light',
+      timeout: 10000,
       setMode: value => set({ mode: value }),
+      setTimeout: value => set({ timeout: value }),
     }),
     {
-      name: 'mode',
+      name: 'userPreference',
       getStorage: () => sessionStorage,
     }
   )

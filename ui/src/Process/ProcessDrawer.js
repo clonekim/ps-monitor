@@ -23,10 +23,10 @@ function ProcessDrawer() {
         </IconButton>
       </Box>
 
-      {content && content.name && (
+      {content && content.label && (
         <Box sx={{ paddingTop: 1, paddingLeft: 1 }}>
           <Typography variant="h5" component="span">
-            {content.name}
+            {content.label}
           </Typography>
         </Box>
       )}

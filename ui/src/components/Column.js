@@ -5,6 +5,7 @@ function Column({
   title,
   value,
   children,
+  header,
   border = false,
   head = false,
   divider = false,
@@ -12,10 +13,11 @@ function Column({
   return (
     <>
       {head ? (
-        <Typography variant="div">{title}</Typography>
+        <Typography variant="span">{title}</Typography>
       ) : (
         <Typography>{title}</Typography>
       )}
+      {header && header}
 
       {divider && <Divider />}
 

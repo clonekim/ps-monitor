@@ -23,6 +23,7 @@ function Layout() {
   const onClick = (path, idx) => {
     navigate(path);
     setTab(idx);
+    if (idx === '2') setToggle(false);
   };
 
   React.useEffect(() => {

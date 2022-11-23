@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"html/template"
@@ -77,7 +78,7 @@ func StartHttp(port int) {
 	})
 
 	r.GET("/ps", func(c *gin.Context) {
-		c.JSON(http.StatusOK, command.FindProcess())
+		c.JSON(http.StatusOK, command.FindProcess(config.Procs))
 	})
 
 	r.GET("/log", func(c *gin.Context) {
@@ -93,18 +94,23 @@ func StartHttp(port int) {
 
 		filepaths := strings.Split(filepath, ",")
 		var lines []string
+		var parsed string
 
 		if len(filepaths) == 2 {
 			if filepaths[0] == "C" {
-				lines, err = command.Output(fmt.Sprintf(filepaths[1], intSize))
+				parsed = fmt.Sprintf(filepaths[1], intSize)
+				lines, err = command.Output(filepath)
+
 			}
 
 			if filepaths[0] == "F" {
+				parsed = filepaths[1]
 				lines, err = command.GetLastLines(filepaths[1], intSize)
 			}
 
 		} else {
-			lines, err = command.GetLastLines(filepath, intSize)
+			SendError(c, errors.New("filepath is not valid"))
+			return
 		}
 
 		if err != nil {
@@ -112,7 +118,18 @@ func StartHttp(port int) {
 			return
 		}
 
-		c.JSON(http.StatusOK, lines)
+		c.JSON(http.StatusOK, command.Logger{
+
+			Logs: func() []command.Log {
+				logs := make([]command.Log, 0)
+				for _, l := range lines {
+					logs = append(logs, command.Log{Value: l})
+				}
+				return logs
+			}(),
+			FilePath: filepath,
+			Parsed:   parsed,
+		})
 	})
 
 	r.DELETE("/kill/:id", func(c *gin.Context) {
@@ -139,6 +156,5 @@ var config *env.Config
 
 func main() {
 	config = env.LoadConfig()
-	command.CreateProc(config.Procs)
 	StartHttp(config.Server.Port)
 }

@@ -62,9 +62,22 @@ function ProcessCard(item) {
         </Box>
       </Box>
 
-      <Box sx={{ width: 0.9, m: 1 }}>
-        <Typography variant="body2">User: {item.user}</Typography>
-        <Typography variant="body2">TTY: {item.tty}</Typography>
+      <Box
+        sx={{
+          width: 0.9,
+          m: 1,
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}>
+        <Box sx={{ width: 0.5 }}>
+          <Typography variant="body2">User: {item.user}</Typography>
+          <Typography variant="body2">TTY: {item.tty}</Typography>
+        </Box>
+        <Box sx={{ width: 0.4 }}>
+          <Typography variant="body2">CPU: {item.cpuPercent}</Typography>
+          <Typography variant="body2">MEM: {item.memPercent}</Typography>
+        </Box>
       </Box>
 
       <CardActions
@@ -73,7 +86,9 @@ function ProcessCard(item) {
           justifyContent: 'space-between',
         }}>
         <Box sx={{ width: 0.9, display: 'flex' }}>
-          <Typography sx={{ p: 1 }}>{item.status || 'none'}</Typography>
+          <Typography sx={{ p: 1, color: 'green', fontWeight: 580 }}>
+            {item.status || 'none'}
+          </Typography>
           <Typography sx={{ p: 1 }}>{item.createTime || ''}</Typography>
         </Box>
 

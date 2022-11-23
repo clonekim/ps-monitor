@@ -18,13 +18,13 @@ import Column from '../components/Column';
 import axios from 'axios';
 import { useAlert } from '../store';
 
-const columns = [{ headerName: 'log', field: 'value', width: 800 }];
+const columns = [{ headerName: 'log', field: 'value', width: 600 }];
 
 const sizes = [100, 200, 300, 400, 500, 800, 1000];
 
 const DisplayBox = styled(Stack)`
   position: absolute;
-  right: 26px;
+  right: 106px;
   top: 20px;
   z-index: 9;
   background: trasparent;
@@ -43,7 +43,7 @@ function Log() {
       .then(res => {
         setLogs(state => ({
           ...state,
-          [filepath]: (res.data || []).map(i => ({ value: i })),
+          [filepath]: res.data,
         }));
 
         if (
@@ -80,14 +80,38 @@ function Log() {
 
   return (
     <>
-      {logpath.map((value, idx) => (
+      <DisplayBox>
+        <FormControl>
+          <Select
+            label="Log Size"
+            sx={{ p: 0 }}
+            onChange={changeSize}
+            value={logSize}>
+            {sizes.map(num => (
+              <MenuItem value={num} key={num}>
+                {num}
+              </MenuItem>
+            ))}
+          </Select>
+          <FormHelperText>log size </FormHelperText>
+        </FormControl>
+      </DisplayBox>
+
+      {logpath.map(value => (
         <Layout
           key={value}
           center={
             <>
-              <Column title={value} head>
+              <Column
+                title={logs[value] ? logs[value].parsed : value}
+                head
+                header={
+                  <IconButton onClick={() => fetchLog(value)}>
+                    <RefreshIcon />
+                  </IconButton>
+                }>
                 <Grid
-                  rowData={logs[value] || []}
+                  rowData={(logs[value] || {}).logs || []}
                   columns={columns}
                   height={300}
                   gridOptions={{
