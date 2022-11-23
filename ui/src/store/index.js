@@ -36,3 +36,8 @@ export const useAlert = create(set => ({
     set({ text, type });
   },
 }));
+
+export const useToggle = create(set => ({
+  toggle: false,
+  setToggle: value => set({ toggle: value }),
+}));

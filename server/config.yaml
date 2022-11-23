@@ -1,12 +1,12 @@
 server:
   port: 4900
-  debug: true
+  debug: false
 
 procs:
-  - java
-  - emacs28
-  - nvim
+  - IntelliJ,idea
+  - Emacs,Emacs
+  - nvim,nvim
 
 logs:
-  - /var/log/system.log
-  - /var/log/daily.out
+  - C,tail -n%d /var/log/system.log | awk '$0 ~ /login/'
+  - F,/var/log/daily.out

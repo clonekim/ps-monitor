@@ -1,8 +1,7 @@
-package main
+package env
 
 import (
 	"bufio"
-	"fmt"
 	"gopkg.in/yaml.v3"
 	"io"
 	"os"
@@ -10,21 +9,21 @@ import (
 
 type Config struct {
 	Server struct {
-		Port  int  `yaml:port`
-		Debug bool `yaml:debug`
-	}
-	Procs []string `yaml:procs`
-	Logs  []string `yaml:logs`
+		Port  int  `yaml:"port" json:"port"`
+		Debug bool `yaml:"debug" json:"debug"`
+	} `json:"server"`
+
+	Procs []string `yaml:"procs" json:"proc"`
+	Logs  []string `yaml:"logs" json:"logs"`
 }
 
-func GetConfig() *Config {
+func LoadConfig() *Config {
 
-	file, err := os.Open("config.yaml");
+	file, err := os.Open("config.yaml")
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("reading config.yaml")
 	buf, err := io.ReadAll(bufio.NewReader(file))
 	if err != nil {
 		panic(err)

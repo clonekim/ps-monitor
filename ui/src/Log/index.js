@@ -63,7 +63,7 @@ function Log() {
     axios
       .get('/config')
       .then(({ data }) => {
-        setLogpath(data.Logs);
+        setLogpath(data.logs);
       })
       .catch(err => {
         setAlert({ text: err.message, type: 'error' });
@@ -80,34 +80,11 @@ function Log() {
 
   return (
     <>
-      <DisplayBox>
-        <FormControl>
-          <Select
-            label="Log Size"
-            sx={{ p: 0 }}
-            onChange={changeSize}
-            value={logSize}>
-            {sizes.map(num => (
-              <MenuItem value={num} key={num}>
-                {num}
-              </MenuItem>
-            ))}
-          </Select>
-          <FormHelperText>log size </FormHelperText>
-        </FormControl>
-      </DisplayBox>
       {logpath.map((value, idx) => (
         <Layout
           key={value}
           center={
             <>
-              <Box display="flex" justifyContent="flex-end">
-                <IconButton onClick={() => fetchLog(value)}>
-                  <RefreshIcon />
-                </IconButton>
-                {idx === 0 && <ThemeToggle />}
-              </Box>
-
               <Column title={value} head>
                 <Grid
                   rowData={logs[value] || []}

@@ -8,6 +8,10 @@ import 'ag-grid-community/dist/styles/ag-theme-balham-dark.css';
 import { useTheme } from '../store';
 const gridCss = 'ag-theme-balham';
 
+const CustomOverlay = React.memo(() => {
+  return <></>;
+});
+
 function GridWrapper({
   width = '100%',
   height,
@@ -31,6 +35,8 @@ function GridWrapper({
       })
     );
   }, []);
+
+  gridOptions.noRowsOverlayComponent = CustomOverlay;
 
   return (
     <div
