@@ -3,10 +3,10 @@ import { Box, IconButton } from '@mui/material';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useTheme } from '../store';
+import { useSetting } from '../store';
 
-function ThemeToggle() {
-  const { mode, setMode, setTimeout } = useTheme();
+function SettingToggle() {
+  const { mode, setMode, setTimeout } = useSetting();
   const themeToggle = () => {
     setMode(mode === 'dark' ? 'light' : 'dark');
   };
@@ -29,4 +29,4 @@ function ThemeToggle() {
   );
 }
 
-export default ThemeToggle;
+export default SettingToggle;

@@ -8,8 +8,8 @@ import (
 	"html/template"
 	"io"
 	"net/http"
-	"pshttp/command"
-	"pshttp/env"
+	"psmon/command"
+	"psmon/env"
 	"strconv"
 	"strings"
 )
@@ -78,7 +78,7 @@ func StartHttp(port int) {
 	})
 
 	r.GET("/ps", func(c *gin.Context) {
-		c.JSON(http.StatusOK, command.FindProcess(config.Procs))
+		c.JSON(http.StatusOK, command.FindProcess(config))
 	})
 
 	r.GET("/log", func(c *gin.Context) {
@@ -97,15 +97,17 @@ func StartHttp(port int) {
 		var parsed string
 
 		if len(filepaths) == 2 {
-			if filepaths[0] == "C" {
-				parsed = fmt.Sprintf(filepaths[1], intSize)
-				lines, err = command.Output(filepath)
+			toLogType, _ := strconv.Atoi(filepaths[0])
 
-			}
+			switch env.LOG_TYPE(toLogType) {
 
-			if filepaths[0] == "F" {
-				parsed = filepaths[1]
+			case env.SHELL:
+				lines, err = command.Output(fmt.Sprintf(filepaths[1], intSize))
+				break
+
+			case env.FILE:
 				lines, err = command.GetLastLines(filepaths[1], intSize)
+				break
 			}
 
 		} else {

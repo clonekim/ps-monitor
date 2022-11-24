@@ -9,13 +9,15 @@ export const useLoading = create(set => ({
   },
 }));
 
-export const useTheme = create(
+export const useSetting = create(
   persist(
     set => ({
       mode: 'light',
-      timeout: 10000,
+      timeout: 30000,
+      toggle: false,
       setMode: value => set({ mode: value }),
       setTimeout: value => set({ timeout: value }),
+      setToggle: value => set({ toggle: value }),
     }),
     {
       name: 'userPreference',
@@ -37,9 +39,4 @@ export const useAlert = create(set => ({
   setAlert: ({ text = 'Internal Server Error', type }) => {
     set({ text, type });
   },
-}));
-
-export const useToggle = create(set => ({
-  toggle: false,
-  setToggle: value => set({ toggle: value }),
 }));

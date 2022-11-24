@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 
 import RefreshIcon from '@mui/icons-material/Refresh';
-import ThemeToggle from '../components/ThemeToggle';
+import SettingToggle from '../components/SettingToggle';
 import Layout from '../components/Layout';
 import Grid from '../components/Grid';
 import Column from '../components/Column';

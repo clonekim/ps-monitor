@@ -1,4 +1,4 @@
-module pshttp
+module psmon
 
 go 1.19
 

@@ -13,6 +13,8 @@ import Layout from '../components/Layout';
 import Column from '../components/Column';
 import Grid from '../components/Grid';
 
+const columns = [{ headerName: 'value', field: 'value', width: 400 }];
+
 const columns0 = [
   { headerName: 'key', field: 'key', width: 200 },
   { headerName: 'value', field: 'value', width: 300 },
@@ -21,30 +23,40 @@ const columns0 = [
 const columns1 = [
   { headerName: 'fd', field: 'fd', width: 50 },
   { headerName: 'family', field: 'family', width: 70 },
+  { headerName: 'type', field: 'type', width: 60 },
   {
     headerName: 'local',
     field: 'localaddr',
-    width: 200,
+    width: 180,
     valueFormatter: ({ data }) => `${data.localaddr.ip}:${data.localaddr.port}`,
   },
   {
     headerName: 'remort',
     field: 'remoteaddr',
-    width: 200,
+    width: 180,
     valueFormatter: ({ data }) =>
       `${data.remoteaddr.ip}:${data.remoteaddr.port}`,
   },
   { headerName: 'status', field: 'status', width: 120 },
 ];
 
+const columns2 = [
+  { headerName: 'fd', field: 'fd', width: 50 },
+  { headerName: 'path', field: 'path' },
+];
+
+
 function ProcessContent({
   cmdline,
   environment = [],
   connection = [],
+  openFile = [],
   id,
   ppid,
 }) {
   const kill = () => {
+    alert("not working(it's demo)");
+    return;
     if (window.confirm('해당 프로세스를 kill 하겠습니까?')) {
       //axios.delete(`/kill/${Id}`).then(res => {});
     }
@@ -57,9 +69,11 @@ function ProcessContent({
           <Layout
             center={
               <Column title="Cmdline">
-                <Paper variant="outlined" sx={{ height: 200, p: 1 }}>
-                  <Typography variant="body1">{cmdline}</Typography>
-                </Paper>
+                <Grid
+                  rowData={cmdline.map(i => ({ value: i }))}
+                  columns={columns}
+                  height={200}
+                />
               </Column>
             }
           />
@@ -75,11 +89,21 @@ function ProcessContent({
           />
         </GridLayout>
 
-        <GridLayout item xs={12} sm={12} md={12}>
+        <GridLayout item xs={6} sm={6} md={6}>
           <Layout
             center={
               <Column title="Connection">
                 <Grid rowData={connection} columns={columns1} height={200} />
+              </Column>
+            }
+          />
+        </GridLayout>
+
+        <GridLayout item xs={6} sm={6} md={6}>
+          <Layout
+            center={
+              <Column title="Open File">
+                <Grid rowData={openFile} columns={columns2} height={200} />
               </Column>
             }
           />

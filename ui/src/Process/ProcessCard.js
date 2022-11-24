@@ -16,29 +16,39 @@ import PowerIcon from '@mui/icons-material/Power';
 import PowerOffIcon from '@mui/icons-material/PowerOff';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { useToggle, useProcess } from '../store';
+import { useSetting, useProcess } from '../store';
 
 function ProcessCard(item) {
-  const { toggle, setToggle } = useToggle();
+  const { toggle, setToggle } = useSetting();
   const { content, setContent } = useProcess();
   const clickHandler = React.useCallback(
     item => {
       setContent(item);
-      setToggle(true);
+      setToggle(
+        toggle && (content || {}).label === item.label ? !toggle : true
+      );
     },
     [item]
   );
 
+  let style = {
+    width: 320,
+    m: 2,
+    p: 1,
+    border: 1,
+    display: 'flex',
+    flexDirection: 'column',
+  };
+
+  if (item.colors) {
+    Object.assign(style, {
+      color: item.colors.color,
+      backgroundColor: item.colors.bgColor,
+    });
+  }
+
   return (
-    <Card
-      sx={{
-        width: 320,
-        m: 2,
-        p: 1,
-        border: 1,
-        display: 'flex',
-        flexDirection: 'column',
-      }}>
+    <Card sx={style}>
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
         <Box sx={{ display: 'flex' }}>
           {item.id === 0 ? (
@@ -93,7 +103,7 @@ function ProcessCard(item) {
         </Box>
 
         <IconButton size="small" onClick={() => clickHandler(item)}>
-          {toggle && content.label === item.label ? (
+          {toggle && (content || {}).label === item.label ? (
             <KeyboardArrowUpIcon />
           ) : (
             <KeyboardArrowDownIcon />

@@ -19,7 +19,7 @@ function Toaster() {
   return (
     <ToastContainer
       position="bottom-right"
-      autoClose={['error', 'warning'].includes(type) ? null : 3000}
+      autoClose={['error', 'warning'].includes(type) ? null : 2000}
       hideProgressBar={true}
       newestOnTop={false}
       closeOnClick={true}

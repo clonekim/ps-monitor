@@ -14,10 +14,12 @@
     "ag-grid-react": "^28.1.1",
     "axios": "^0.27.2",
     "react": "^18.2.0",
+    "react-collapse-pane": "^3.0.1",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.1",
     "react-scripts": "5.0.1",
     "react-toastify": "^9.0.8",
+    "styled-components": "^5.3.6",
     "web-vitals": "^2.1.4",
     "zustand": "^4.1.1"
   },

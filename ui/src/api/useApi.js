@@ -30,6 +30,8 @@ function useApi() {
 
   return {
     psCommand,
+    configCommand,
+    logCommand,
   };
 }
 

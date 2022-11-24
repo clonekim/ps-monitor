@@ -2,19 +2,18 @@ import React, { useMemo } from 'react';
 import { ThemeProvider } from '@emotion/react';
 import { Box, CssBaseline, Tab, Tabs, Drawer } from '@mui/material';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { useLoading, useTheme, useToggle, useProcess } from './store';
+import { useLoading, useSetting, useProcess } from './store';
 
 import themeConfig from './theme';
 import ProgressHelper from './components/ProcessHelper';
-import ThemeToggle from './components/ThemeToggle';
-import Toaster from './components/Toaster';
 import ProcessDrawer from './Process/ProcessDrawer';
+import SettingToggle from './components/SettingToggle';
+import Toaster from './components/Toaster';
 
 function Layout() {
   const [tab, setTab] = React.useState('1');
-  const { mode } = useTheme();
+  const { toggle, mode, setToggle } = useSetting();
   const theme = useMemo(() => themeConfig(mode), [mode]);
-  const { toggle, setToggle } = useToggle();
   const { content } = useProcess();
   const { show } = useLoading();
   const navigate = useNavigate();
@@ -44,7 +43,7 @@ function Layout() {
       </Box>
 
       <Box sx={{ position: 'absolute', top: 20, right: 20 }}>
-        <ThemeToggle />
+        <SettingToggle />
       </Box>
 
       <Drawer

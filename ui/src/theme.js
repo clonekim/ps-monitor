@@ -1,84 +1,23 @@
 import { createTheme } from '@mui/material';
 
+//import { grey, deepOrange } from '@mui/material/colors';
+
 export default function (mode) {
   return createTheme({
-    status: {
-      danger: '#e53e3e',
-    },
     palette: {
       mode,
-    },
-
-    typography: {
-      subtitle1: {
-        fontSize: '0.77rem',
-      },
-      body1: {
-        fontSize: '0.9rem',
-      },
-    },
-
-    spacing: 4,
-
-    components: {
-      MuiAutocomplete: {
-        styleOverrides: {
-          inputRoot: {
-            padding: 4,
-          },
-        },
+      primary: {
+        light: '#757ce8',
+        main: '#3f51b5',
+        dark: '#3f51b5',
+        contrastText: '#fff',
       },
 
-      MuiToolbar: {
-        styleOverrides: {
-          root: {
-            height: 32,
-            minHeight: 'unset',
-          },
-        },
-      },
-
-      MuiTypography: {
-        styleOverrides: {
-          root: {
-            textTransform: 'none',
-          },
-        },
-      },
-
-      MuiButtonBase: {
-        styleOverrides: {
-          root: {
-            padding: 0,
-          },
-        },
-      },
-
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            textTransform: 'none',
-          },
-        },
-      },
-
-      MuiNativeSelect: {
-        styleOverrides: {
-          root: {
-            padding: 'unset',
-          },
-        },
-      },
-
-      MuiOutlinedInput: {
-        styleOverrides: {
-          root: {
-            padding: '4px',
-          },
-          input: {
-            padding: '8px 8px',
-          },
-        },
+      secondary: {
+        light: '#ff7961',
+        main: '#ffffff',
+        dark: '#ba000d',
+        contrastText: '#000',
       },
     },
   });

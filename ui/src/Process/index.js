@@ -1,21 +1,19 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import ProcessCard from './ProcessCard';
-import { useAlert, useLoading, useProcess, useTheme } from '../store';
+import { useAlert, useLoading, useProcess, useSetting } from '../store';
 import useApi from '../api/useApi';
 
 function ProcessIndex() {
   const { list } = useProcess();
   const { setAlert } = useAlert();
   const { psCommand } = useApi();
-  const { timeout } = useTheme();
+  const { timeout } = useSetting();
 
   React.useEffect(() => {
     psCommand();
 
     const timer = setInterval(() => psCommand(), timeout || 10000);
-
-    setAlert({ text: `Timeout setting: ${timeout} `, type: 'info' });
 
     return () => {
       clearInterval(timer);

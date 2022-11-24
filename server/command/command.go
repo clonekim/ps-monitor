@@ -3,32 +3,38 @@ package command
 import (
 	"bufio"
 	"bytes"
-	"errors"
 	"fmt"
 	"github.com/shirou/gopsutil/v3/net"
 	"github.com/shirou/gopsutil/v3/process"
 	"log"
 	"os"
 	"os/exec"
+	"psmon/env"
 	"strings"
 	"time"
 )
 
+type ColorMap struct {
+	Color   *string `json:"color"`
+	BgColor *string `json:"bgColor"`
+}
+
 type Proc struct {
-	Name        string               `json:"name"`
-	Label       string               `json:"label"`
-	Bin         string               `json:"bin"`
-	Id          int32                `json:"id"`
-	Ppid        int32                `json:"ppid"`
-	User        string               `json:"user"`
-	Cmdline     []string             `json:"cmdline"`
-	Environment []Environment        `json:"environment"`
-	Status      []string             `json:"status"`
-	Terminal    string               `json:"tty"`
-	CreateTime  string               `json:"createTime"`
-	Connection  []net.ConnectionStat `json:"connection"`
-	CpuPercent  string               `json:"cpuPercent"`
-	MemPercent  string               `json:"memPercent"`
+	Name        string                  `json:"name"`
+	Label       string                  `json:"label"`
+	Id          int32                   `json:"id"`
+	Ppid        int32                   `json:"ppid"`
+	User        string                  `json:"user"`
+	Cmdline     []string                `json:"cmdline"`
+	Environment []Environment           `json:"environment"`
+	Status      []string                `json:"status"`
+	Terminal    string                  `json:"tty"`
+	CreateTime  string                  `json:"createTime"`
+	Connection  []net.ConnectionStat    `json:"connection"`
+	OpenFile    []process.OpenFilesStat `json:"openFile"`
+	CpuPercent  string                  `json:"cpuPercent"`
+	MemPercent  string                  `json:"memPercent"`
+	Colors      ColorMap                `json:"colors"`
 }
 
 type Environment struct {
@@ -59,10 +65,23 @@ func CreateProc(names []string) []Proc {
 	for _, i := range names {
 		n := strings.Split(i, ",")
 
-		plist = append(plist, Proc{
-			Label: n[0],
-			Name:  n[1],
-		})
+		switch len(n) {
+
+		case 5:
+			plist = append(plist, Proc{
+				Label:  n[0],
+				Name:   n[1],
+				User:   n[2],
+				Colors: ColorMap{Color: &n[3], BgColor: &n[4]},
+			})
+			break
+		default:
+			plist = append(plist, Proc{
+				Label: i,
+				Name:  i,
+			})
+		}
+
 	}
 
 	return plist
@@ -71,7 +90,6 @@ func CreateProc(names []string) []Proc {
 
 func UpdateProc(proc *Proc, p *process.Process) {
 
-	bin, _ := p.Name()
 	username, _ := p.Username()
 	cmdline, _ := p.CmdlineSlice()
 	envs, _ := p.Environ()
@@ -82,6 +100,7 @@ func UpdateProc(proc *Proc, p *process.Process) {
 	ppid, _ := p.Ppid()
 	cpuPercent, _ := p.CPUPercent()
 	memPercent, _ := p.MemoryPercent()
+	openFiles, _ := p.OpenFiles()
 
 	getEnv := func() []Environment {
 		list := make([]Environment, 0)
@@ -99,7 +118,12 @@ func UpdateProc(proc *Proc, p *process.Process) {
 		return list
 	}
 
-	proc.Bin = bin
+	if openFiles == nil {
+		proc.OpenFile = make([]process.OpenFilesStat, 0)
+	} else {
+		proc.OpenFile = openFiles
+	}
+
 	proc.Id = p.Pid
 	proc.Ppid = ppid
 	proc.User = username
@@ -108,8 +132,8 @@ func UpdateProc(proc *Proc, p *process.Process) {
 	proc.Status = status
 	proc.Terminal = terminal
 	proc.CreateTime = Time2String(createtime)
-	proc.CpuPercent = fmt.Sprintf("%.2f", cpuPercent)
-	proc.MemPercent = fmt.Sprintf("%.2f", memPercent)
+	proc.CpuPercent = fmt.Sprintf(envConf.Program.RatioFormat, cpuPercent)
+	proc.MemPercent = fmt.Sprintf(envConf.Program.RatioFormat, memPercent)
 
 	if connections == nil {
 		proc.Connection = make([]net.ConnectionStat, 0)
@@ -118,13 +142,39 @@ func UpdateProc(proc *Proc, p *process.Process) {
 	}
 }
 
-func FindProcess(labels []string) *[]Proc {
+var envConf *env.Config
 
-	plist := CreateProc(labels)
+func FindProcess(config *env.Config) *[]Proc {
+	envConf = config
+	plist := CreateProc(config.Program.Processes)
 	v, _ := process.Processes()
+
+	fnMatchUser := func(user string, puser string) bool {
+
+		if user == "" {
+			return true
+		}
+
+		return user == puser
+	}
+
+	fnNameComparer := func(cmd string, name string) bool {
+		start := strings.Index(cmd, name)
+
+		if config.Program.MatchLevel == 2 {
+			return strings.Compare(cmd, name) == 0
+		}
+
+		if config.Program.MatchLevel == 1 {
+			return strings.Compare(cmd[start:start+len(name)], name) == 0
+		}
+
+		return false
+	}
 
 	for _, p := range v {
 		cmd, _ := p.Name()
+		user, _ := p.Username()
 
 		if cmd == "" {
 			continue
@@ -133,12 +183,16 @@ func FindProcess(labels []string) *[]Proc {
 		for i, j := range plist {
 
 			start := strings.Index(cmd, j.Name)
+			if start > -1 && j.Id == 0 {
 
-			if start > -1 && j.Id == 0 && strings.Compare(cmd[start:start+len(j.Name)], j.Name) == 0 {
-				log.Printf(" --> %s %s\n", cmd, j.Name)
-				UpdateProc(&plist[i], p)
-				break
+				if fnMatchUser(j.User, user) && fnNameComparer(cmd, j.Name) {
+					log.Printf("Match(%d) -> %s %s\n", config.Program.MatchLevel, cmd, j.Name)
+					UpdateProc(&plist[i], p)
+					break
+				}
+
 			}
+
 		}
 	}
 
@@ -146,25 +200,6 @@ func FindProcess(labels []string) *[]Proc {
 }
 
 func KillProcess(id int) error {
-	exist, err := process.PidExists(int32(id))
-
-	if err != nil {
-		return err
-	}
-
-	if !exist {
-		return errors.New(fmt.Sprintf("Pid:%d is not exist", id))
-	}
-
-	p := process.Process{
-		Pid: int32(id),
-	}
-
-	err = p.Kill()
-
-	if err != nil {
-		return err
-	}
 
 	return nil
 }
