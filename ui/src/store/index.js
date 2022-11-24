@@ -13,10 +13,18 @@ export const useSetting = create(
   persist(
     set => ({
       mode: 'light',
+      grid: true,
       timeout: 30000,
       toggle: false,
       setMode: value => set({ mode: value }),
-      setTimeout: value => set({ timeout: value }),
+      setGrid: value => set({ grid: value }),
+      setTimeout: value =>
+        set({
+          timeout:
+            value === 0 || isNaN(value)
+              ? 30 * 1000
+              : parseInt(value, 10) * 1000,
+        }),
       setToggle: value => set({ toggle: value }),
     }),
     {

@@ -7,14 +7,14 @@ function useApi() {
   const { setAlert } = useAlert();
 
   const psCommand = () => {
-    setLoading(true);
+   // setLoading(true);
     axios
       .get('/ps')
       .then(res => setList(res.data || []))
       .catch(err => {
         setAlert({ text: err.message, type: 'error' });
       })
-      .finally(() => setLoading(false));
+    //  .finally(() => setLoading(false));
   };
 
   const logCommand = () => {};

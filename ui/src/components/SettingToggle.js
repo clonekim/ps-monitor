@@ -12,10 +12,8 @@ function SettingToggle() {
   };
 
   const showPrompt = () => {
-    const result = prompt('input value for setInterval');
-
-    const num = isNaN(result) ? 10 : parseInt(result, 10);
-    setTimeout(num * 1000);
+    const result = prompt('새로고침 시간을 수정합니다(초단위로 입력하시오)');
+    setTimeout(result);
   };
   return (
     <Box>

@@ -84,7 +84,7 @@ function Log() {
         <FormControl>
           <Select
             label="Log Size"
-            sx={{ p: 0 }}
+            sx={{ '& .MuiSelect-select': { padding: '6px' } }}
             onChange={changeSize}
             value={logSize}>
             {sizes.map(num => (

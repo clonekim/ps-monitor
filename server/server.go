@@ -102,10 +102,12 @@ func StartHttp(port int) {
 			switch env.LOG_TYPE(toLogType) {
 
 			case env.SHELL:
-				lines, err = command.Output(fmt.Sprintf(filepaths[1], intSize))
+				parsed = fmt.Sprintf(filepaths[1], intSize)
+				lines, err = command.Output(parsed)
 				break
 
 			case env.FILE:
+				parsed = filepaths[1]
 				lines, err = command.GetLastLines(filepaths[1], intSize)
 				break
 			}
@@ -114,11 +116,11 @@ func StartHttp(port int) {
 			SendError(c, errors.New("filepath is not valid"))
 			return
 		}
-
-		if err != nil {
-			SendError(c, err)
-			return
-		}
+		//
+		//if err != nil {
+		//	SendError(c, err)
+		//	return
+		//}
 
 		c.JSON(http.StatusOK, command.Logger{
 

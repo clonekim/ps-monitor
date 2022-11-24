@@ -214,13 +214,8 @@ func Output(commands string) ([]string, error) {
 
 	cmd.Env = envs
 	cmd.Stdout = buf
-	cmd.Stderr = os.Stderr
+	cmd.Stderr = buf
 	err := cmd.Run()
-
-	if err != nil {
-		log.Fatalln(err)
-		return nil, err
-	}
 
 	s := bufio.NewScanner(buf)
 	lines := make([]string, 0)
@@ -229,6 +224,11 @@ func Output(commands string) ([]string, error) {
 		if text != "" {
 			lines = append(lines, text)
 		}
+	}
+
+	if err != nil {
+		log.Fatalln(err)
+		return lines, err
 	}
 
 	return lines, nil
@@ -241,11 +241,9 @@ func GetLastLines(filepath string, size int) ([]string, error) {
 	path = append(path, os.Getenv("PATH"))
 	tail.Env = path
 	tail.Stdout = buf
+	tail.Stderr = buf
 	err := tail.Run()
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
+
 	s := bufio.NewScanner(buf)
 	var lines []string
 	for s.Scan() {
@@ -254,5 +252,10 @@ func GetLastLines(filepath string, size int) ([]string, error) {
 			lines = append(lines, text)
 		}
 	}
+
+	if err != nil {
+		return lines, err
+	}
+
 	return lines, nil
 }
