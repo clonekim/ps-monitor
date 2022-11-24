@@ -12,6 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Layout from '../components/Layout';
 import Column from '../components/Column';
 import Grid from '../components/Grid';
+import { useProcess } from '../store';
 
 const columns = [{ headerName: 'value', field: 'value', width: 400 }];
 
@@ -45,15 +46,11 @@ const columns2 = [
   { headerName: 'path', field: 'path' },
 ];
 
+function ProcessContent() {
+  const { content } = useProcess();
 
-function ProcessContent({
-  cmdline,
-  environment = [],
-  connection = [],
-  openFile = [],
-  id,
-  ppid,
-}) {
+  if (!content || content.id === 0) return null;
+
   const kill = () => {
     alert("not working(it's demo)");
     return;
@@ -70,7 +67,7 @@ function ProcessContent({
             center={
               <Column title="Cmdline">
                 <Grid
-                  rowData={cmdline.map(i => ({ value: i }))}
+                  rowData={content.cmdline.map(i => ({ value: i }))}
                   columns={columns}
                   height={200}
                 />
@@ -83,7 +80,11 @@ function ProcessContent({
           <Layout
             center={
               <Column title="Environments">
-                <Grid rowData={environment} columns={columns0} height={200} />
+                <Grid
+                  rowData={content.environment}
+                  columns={columns0}
+                  height={200}
+                />
               </Column>
             }
           />
@@ -93,7 +94,11 @@ function ProcessContent({
           <Layout
             center={
               <Column title="Connection">
-                <Grid rowData={connection} columns={columns1} height={200} />
+                <Grid
+                  rowData={content.connection}
+                  columns={columns1}
+                  height={200}
+                />
               </Column>
             }
           />
@@ -103,7 +108,11 @@ function ProcessContent({
           <Layout
             center={
               <Column title="Open File">
-                <Grid rowData={openFile} columns={columns2} height={200} />
+                <Grid
+                  rowData={content.openFile}
+                  columns={columns2}
+                  height={200}
+                />
               </Column>
             }
           />
@@ -118,7 +127,7 @@ function ProcessContent({
           onClick={kill}
           startIcon={<DeleteForeverIcon />}
           variant="outlined">
-          {`kill ${id}`}
+          {`kill ${content.id}`}
         </Button>
       </Box>
     </>

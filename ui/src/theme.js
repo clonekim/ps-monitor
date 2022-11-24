@@ -1,7 +1,5 @@
 import { createTheme } from '@mui/material';
 
-//import { grey, deepOrange } from '@mui/material/colors';
-
 export default function (mode) {
   return createTheme({
     palette: {

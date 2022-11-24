@@ -3,14 +3,23 @@ import { useLoading, useProcess, useAlert } from '../store';
 
 function useApi() {
   const { setLoading } = useLoading();
-  const { setList } = useProcess();
+  const { content, setContent, setList } = useProcess();
   const { setAlert } = useAlert();
 
   const psCommand = () => {
     setLoading(true);
     axios
       .get('/ps')
-      .then(res => setList(res.data || []))
+      .then(res => {
+        const list = res.data || [];
+        setList(list);
+
+        if (content && content.label) {
+          list.forEach(i => {
+            if (i.label === content.label) setContent(i);
+          });
+        }
+      })
       .catch(err => {
         setAlert({ text: err.message, type: 'error' });
       })
