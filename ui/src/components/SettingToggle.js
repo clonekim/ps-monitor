@@ -13,7 +13,7 @@ function SettingToggle() {
 
   const showPrompt = () => {
     const result = prompt('새로고침 시간을 수정합니다(초단위로 입력하시오)');
-    setTimeout(result);
+    if (result) setTimeout(result);
   };
   return (
     <Box>

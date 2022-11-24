@@ -21,7 +21,7 @@ export const useSetting = create(
       setTimeout: value =>
         set({
           timeout:
-            value === 0 || isNaN(value)
+            !value || value === 0 || isNaN(value)
               ? 30 * 1000
               : parseInt(value, 10) * 1000,
         }),
