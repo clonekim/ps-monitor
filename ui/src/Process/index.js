@@ -34,7 +34,7 @@ function ProcessIndex() {
     <>
       <DisplayBox>
         <IconButton onClick={() => setGrid(!grid)}>
-          {!grid ? <ViewListIcon /> : <GridViewIcon />}
+          {grid ? <ViewListIcon /> : <GridViewIcon />}
         </IconButton>
       </DisplayBox>
 

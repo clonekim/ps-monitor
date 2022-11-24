@@ -5,7 +5,7 @@ export const useLoading = create(set => ({
   show: false,
   setLoading: value => {
     if (value === true) set({ show: value });
-    else setTimeout(() => set({ show: false }), 150);
+    else setTimeout(() => set({ show: false }), 100);
   },
 }));
 
