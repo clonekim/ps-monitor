@@ -5,7 +5,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useSetting } from '../store';
 
-function SettingToggle() {
+function SettingToggle({ tab }) {
   const { mode, setMode, setTimeout } = useSetting();
   const themeToggle = () => {
     setMode(mode === 'dark' ? 'light' : 'dark');
@@ -17,9 +17,11 @@ function SettingToggle() {
   };
   return (
     <Box>
-      <IconButton onClick={showPrompt}>
-        <SettingsIcon />
-      </IconButton>
+      {tab === '1' && (
+        <IconButton onClick={showPrompt}>
+          <SettingsIcon />
+        </IconButton>
+      )}
       <IconButton onClick={themeToggle}>
         {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
       </IconButton>

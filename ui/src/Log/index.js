@@ -24,7 +24,7 @@ const sizes = [100, 200, 300, 400, 500, 800, 1000];
 
 const DisplayBox = styled(Stack)`
   position: absolute;
-  right: 106px;
+  right: 66px;
   top: 20px;
   z-index: 9;
   background: trasparent;
@@ -107,7 +107,7 @@ function Log() {
                 head
                 header={
                   <IconButton onClick={() => fetchLog(value)}>
-                    <RefreshIcon />
+                    <RefreshIcon color="success" />
                   </IconButton>
                 }>
                 <Grid
