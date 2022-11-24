@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { ThemeProvider } from '@emotion/react';
-import { Box, CssBaseline, Tab, Tabs, Drawer } from '@mui/material';
+import { Box, CssBaseline, Tab, Tabs, Dialog } from '@mui/material';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useLoading, useSetting, useProcess } from './store';
 
@@ -46,13 +46,9 @@ function Layout() {
         <SettingToggle tab={tab} />
       </Box>
 
-      <Drawer
-        anchor="bottom"
-        variant="persistent"
-        open={toggle}
-        onClose={() => setToggle(false)}>
+      <Dialog fullScreen open={toggle} onClose={() => setToggle(false)}>
         <ProcessDrawer />
-      </Drawer>
+      </Dialog>
 
       <Box sx={{ p: 1 }}>
         <Outlet />
