@@ -33,8 +33,7 @@ function ProcessCard(item) {
 
   let style = {
     width: 320,
-    m: 2,
-    p: 1,
+    margin: '6px',
     border: 1,
     display: 'flex',
     flexDirection: 'column',

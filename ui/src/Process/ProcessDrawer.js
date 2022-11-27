@@ -28,7 +28,7 @@ function ProcessDrawer() {
         {content && content.label && (
           <Box sx={{ paddingTop: 1, paddingLeft: 1 }}>
             <Typography variant="h5" component="span">
-              {content.label}
+              {content.label} {content.id > 0 ? ` (${content.id})` : ''}
             </Typography>
           </Box>
         )}

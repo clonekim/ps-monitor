@@ -38,7 +38,7 @@ function ProcessIndex() {
         </IconButton>
       </DisplayBox>
 
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', p: 2 }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
         {!grid && <ProcessTable rows={list} />}
         {grid && list.map(item => <ProcessCard {...item} key={item.name} />)}
       </Box>

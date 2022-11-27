@@ -17,7 +17,7 @@ import { useProcess } from '../store';
 const columns = [{ headerName: 'value', field: 'value', width: 400 }];
 
 const columns0 = [
-  { headerName: 'key', field: 'key', width: 200 },
+  { headerName: 'key', field: 'key', width: 150 },
   { headerName: 'value', field: 'value', width: 300 },
 ];
 
@@ -28,13 +28,13 @@ const columns1 = [
   {
     headerName: 'local',
     field: 'localaddr',
-    width: 180,
+    width: 150,
     valueFormatter: ({ data }) => `${data.localaddr.ip}:${data.localaddr.port}`,
   },
   {
     headerName: 'remort',
     field: 'remoteaddr',
-    width: 180,
+    width: 150,
     valueFormatter: ({ data }) =>
       `${data.remoteaddr.ip}:${data.remoteaddr.port}`,
   },
@@ -43,7 +43,7 @@ const columns1 = [
 
 const columns2 = [
   { headerName: 'fd', field: 'fd', width: 50 },
-  { headerName: 'path', field: 'path' },
+  { headerName: 'path', field: 'path', width: 360 },
 ];
 
 function ProcessContent() {
@@ -119,17 +119,17 @@ function ProcessContent() {
         </GridLayout>
       </GridLayout>
 
-      <Box
-        display="flex"
-        justifyContent="flex-end"
-        sx={{ paddingBottom: 2, paddingRight: 2 }}>
-        <Button
-          onClick={kill}
-          startIcon={<DeleteForeverIcon />}
-          variant="outlined">
-          {`kill ${content.id}`}
-        </Button>
-      </Box>
+      {/* <Box */}
+      {/*   display="flex" */}
+      {/*   justifyContent="flex-end" */}
+      {/*   sx={{ paddingBottom: 2, paddingRight: 2 }}> */}
+      {/*   <Button */}
+      {/*     onClick={kill} */}
+      {/*     startIcon={<DeleteForeverIcon />} */}
+      {/*     variant="outlined"> */}
+      {/*     {`kill ${content.id}`} */}
+      {/*   </Button> */}
+      {/* </Box> */}
     </>
   );
 }
