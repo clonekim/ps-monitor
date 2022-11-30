@@ -2,12 +2,12 @@
 
 ## Skills
  - React
- - Go/Gin
+ - Go
 
 ## Features
  - dark theme
- - configable for process's
- - adustable 
+ - configable for process's list
+ - adustable calling api's period
 
 ### config.yml
 
