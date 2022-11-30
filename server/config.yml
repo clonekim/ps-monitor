@@ -6,15 +6,10 @@ program:
   match: 1
   ratioformat: "%.3f"
   processes:
-    - MOR,MORmast,keadm07,,
-    - IntelliJ,idea,,,
+    - VI,nvim,bonjour,,
+    - IntelliJ,idea,,#d53636de,#261e1e
     - Emacs,Emacs,,,
 
 logs:
-  - 0,tail -n%d /var/log/cron | awk '$0 ~ /keadm07/'
-  - 1,/program10g/MQ/FOIS/LOG3/cron_run.log
-  - 1,/program10g/MQ/FOIS/LOG3/FoisProcessSh.log
-  - 1,/program10g/MQ/FOIS/LOG/cron_run.log
-  - 1,/program10g/MQ/FGS/LOG3/FgsProcessSh.log
-  - 1,/program10g/MQ/FGS/LOG3/Fgs3AdmAllSh.log
-
+  - 0,tail -n%d /var/log/system.log | awk '$0 ~ /login/'
+  - 1,/var/log/daily.out
