@@ -47,6 +47,28 @@ logs:
 ![](img/log.png)
 
 
+## Build
+
+### Front
+```
+yarn build
+```
+
+### Server
+
+```
+GOOS=linux GOARCH=amd64 go build server.go
+```
+for windows
+```
+GOOS=windows GOARCH=amd64
+```
+
+for Mac
+```
+GOOS=darwin GOARCH=amd64 or arm64
+```
+
 ## Run
 
 download appropriate binary file from deploy directory  
