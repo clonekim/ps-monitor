@@ -6,9 +6,10 @@
 
 ## Features
  - dark theme
+ - grid/table view supports
  - configable for process's
  - configable for logs's 
- - adustable calling api's period
+ - adjustable calling api's period
 
 ### config.yml
 
