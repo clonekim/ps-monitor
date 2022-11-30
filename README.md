@@ -3,12 +3,45 @@
 ## Skills
  - React
  - Go/Gin
- 
 
-## Process View 
+## Features
+ - dark theme
+ - configable for process's
+ - adustable 
 
-![img/list.png]
+### config.yml
 
-## Log Viewer
+label,command,user,color,bgColor
+ex) IntelliJ,idea,,#d53636de,#261e1e
 
-![img/log.png]
+```yaml
+server:
+  port: 4900
+  debug: true
+
+program:
+  match: 1
+  ratioformat: "%.3f"
+  processes:
+    - VI,nvim,bonjour,,
+    - IntelliJ,idea,,#d53636de,#261e1e
+    - Emacs,Emacs,,,
+
+logs:
+  - 0,tail -n%d /var/log/system.log | awk '$0 ~ /login/'
+  - 1,/var/log/daily.out
+```
+
+## Screens
+
+### Process View 
+
+![](img/list.png)
+
+### Process Detail
+
+![](img/detail.png)
+
+### Log Viewer
+
+![](img/log.png)
