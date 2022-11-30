@@ -11,9 +11,6 @@
 
 ### config.yml
 
-label,command,user,color,bgColor
-ex) IntelliJ,idea,,#d53636de,#261e1e
-
 ```yaml
 server:
   port: 4900
@@ -23,6 +20,7 @@ program:
   match: 1
   ratioformat: "%.3f"
   processes:
+    # label,command,user,color,bgColor
     - VI,nvim,bonjour,,
     - IntelliJ,idea,,#d53636de,#261e1e
     - Emacs,Emacs,,,
