@@ -6,7 +6,8 @@
 
 ## Features
  - dark theme
- - configable for process's list
+ - configable for process's
+ - configable for logs's 
  - adustable calling api's period
 
 ### config.yml
