@@ -45,3 +45,9 @@ logs:
 ### Log Viewer
 
 ![](img/log.png)
+
+
+## Run
+
+download appropriate binary file from deploy directory  
+when it lauches , it needs a config file (copy config.yml)  
