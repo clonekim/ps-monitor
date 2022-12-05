@@ -69,7 +69,7 @@ for Mac
 GOOS=darwin GOARCH=amd64 or arm64
 ```
 
-## Run
+## Using precompiled binary
 
 download appropriate binary file from deploy directory  
-when it lauches , it needs a config file (copy config.yml)  
+and copy config.yml
