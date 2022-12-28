@@ -34,13 +34,6 @@ function ProcessCard(item) {
     flexDirection: 'column',
   };
 
-  if (item.colors) {
-    Object.assign(style, {
-      color: item.colors.color,
-      backgroundColor: item.colors.bgColor,
-    });
-  }
-
   return (
     <Card sx={style}>
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>

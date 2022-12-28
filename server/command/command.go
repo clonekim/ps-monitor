@@ -14,11 +14,6 @@ import (
 	"time"
 )
 
-type ColorMap struct {
-	Color   *string `json:"color"`
-	BgColor *string `json:"bgColor"`
-}
-
 type Proc struct {
 	Name        string                  `json:"name"`
 	Label       string                  `json:"label"`
@@ -34,7 +29,7 @@ type Proc struct {
 	OpenFile    []process.OpenFilesStat `json:"openFile"`
 	CpuPercent  string                  `json:"cpuPercent"`
 	MemPercent  string                  `json:"memPercent"`
-	Colors      ColorMap                `json:"colors"`
+	Touch       string                  `json:"touch"`
 }
 
 type Environment struct {
@@ -68,14 +63,30 @@ func CreateProc(names []string) []Proc {
 
 		switch len(n) {
 
-		case 5:
+		case 4:
 			plist = append(plist, Proc{
-				Label:  n[0],
-				Name:   n[1],
-				User:   n[2],
-				Colors: ColorMap{Color: &n[3], BgColor: &n[4]},
+				Label: n[0],
+				Name:  n[1],
+				User:  n[2],
+				Touch: n[3],
 			})
 			break
+
+		case 3:
+			plist = append(plist, Proc{
+				Label: n[0],
+				Name:  n[1],
+				User:  n[2],
+			})
+			break
+
+		case 2:
+			plist = append(plist, Proc{
+				Label: n[0],
+				Name:  n[1],
+			})
+			break
+			
 		default:
 			plist = append(plist, Proc{
 				Label: i,
@@ -228,7 +239,7 @@ func Output(commands string) ([]string, error) {
 	}
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		return lines, err
 	}
 

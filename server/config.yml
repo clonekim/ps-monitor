@@ -6,9 +6,9 @@ program:
   match: 1
   ratioformat: "%.3f"
   processes:
-    - VI,nvim,bonjour,,
-    - IntelliJ,idea,,#d53636de,#261e1e
-    - Emacs,Emacs,,,
+    - VI,nvim,bonjour,/Users/bonjour/1231
+    - IntelliJ,idea,,
+    - Emacs,Emacs,,
 
 logs:
   - system.log,0,tail -n%d /var/log/system.log | awk '$0 ~ /login/'

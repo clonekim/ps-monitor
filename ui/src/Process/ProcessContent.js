@@ -1,18 +1,20 @@
 import React from 'react';
+import axios from 'axios';
 import {
   Box,
   Button,
   Paper,
   Typography,
   IconButton,
+  TextField,
   Grid as GridLayout,
 } from '@mui/material';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import CloseIcon from '@mui/icons-material/Close';
+import BoltIcon from '@mui/icons-material/Bolt';
 import Layout from '../components/Layout';
 import Column from '../components/Column';
 import Grid from '../components/Grid';
-import { useProcess } from '../store';
+import { useProcess, useAlert } from '../store';
 
 const columns = [{ headerName: 'value', field: 'value', width: 400 }];
 
@@ -46,17 +48,31 @@ const columns2 = [
   { headerName: 'path', field: 'path', width: 360 },
 ];
 
-function ProcessContent({ cmdline, environment, connection, openFile }) {
+function ProcessContent({ cmdline, environment, connection, openFile, touch }) {
+  const { setAlert } = useAlert();
+  const [cmd, setCmd] = React.useState(touch);
   const { label } = useProcess();
 
   if (!label) return null;
 
-  const kill = () => {
-    alert("not working(it's demo)");
-    return;
-    if (window.confirm('해당 프로세스를 kill 하겠습니까?')) {
-      //axios.delete(`/kill/${Id}`).then(res => {});
+  const sendTouch = () => {
+    if (cmd) {
+      axios
+        .post('/touch', { cmd })
+        .then(res => console.log(res))
+        .catch(err => {
+          setAlert({
+            text: err.response.data.message || err.message,
+            type: 'error',
+          });
+        });
+    } else {
+      alert('명령어를 입력하세요');
     }
+  };
+
+  const handleText = e => {
+    setCmd(e.target.value);
   };
 
   return (
@@ -107,17 +123,20 @@ function ProcessContent({ cmdline, environment, connection, openFile }) {
         </GridLayout>
       </GridLayout>
 
-      {/* <Box */}
-      {/*   display="flex" */}
-      {/*   justifyContent="flex-end" */}
-      {/*   sx={{ paddingBottom: 2, paddingRight: 2 }}> */}
-      {/*   <Button */}
-      {/*     onClick={kill} */}
-      {/*     startIcon={<DeleteForeverIcon />} */}
-      {/*     variant="outlined"> */}
-      {/*     {`kill ${content.id}`} */}
-      {/*   </Button> */}
-      {/* </Box> */}
+      {touch && (
+        <Box display="flex" justifyContent="flex-end" sx={{ p: 2 }}>
+          <TextField
+            fullWidth
+            label="Touch"
+            variant="outlined"
+            value={cmd}
+            onChange={handleText}
+          />
+          <IconButton onClick={sendTouch} variant="outlined">
+            <BoltIcon />
+          </IconButton>
+        </Box>
+      )}
     </>
   );
 }

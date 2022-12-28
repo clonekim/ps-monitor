@@ -160,6 +160,23 @@ func StartHttp(port int) {
 		c.Status(http.StatusNoContent)
 	})
 
+	r.POST("/touch", func(c *gin.Context) {
+		var json map[string]string
+
+		if err := c.ShouldBind(&json); err != nil {
+			SendError(c, err)
+		}
+
+		output, err := command.Output(fmt.Sprintf("touch %s", json["cmd"]))
+
+		if err != nil {
+			SendError(c, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, output)
+	})
+
 	r.Run(":" + strconv.Itoa(port))
 }
 
