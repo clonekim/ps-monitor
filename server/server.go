@@ -95,20 +95,26 @@ func StartHttp(port int) {
 		filepaths := strings.Split(filepath, ",")
 		var lines []string
 		var parsed string
+		var id string
 
-		if len(filepaths) == 2 {
-			toLogType, _ := strconv.Atoi(filepaths[0])
+		if len(filepaths) == 3 {
+			id = filepaths[0]
+			toLogType, _ := strconv.Atoi(filepaths[1])
 
 			switch env.LOG_TYPE(toLogType) {
 
 			case env.SHELL:
-				parsed = fmt.Sprintf(filepaths[1], intSize)
+				if strings.Contains(filepaths[2], "%d") {
+					parsed = fmt.Sprintf(filepaths[2], intSize)
+				} else {
+					parsed = filepaths[2]
+				}
 				lines, err = command.Output(parsed)
 				break
 
 			case env.FILE:
-				parsed = filepaths[1]
-				lines, err = command.GetLastLines(filepaths[1], intSize)
+				parsed = filepaths[2]
+				lines, err = command.GetLastLines(filepaths[2], intSize)
 				break
 			}
 
@@ -123,7 +129,7 @@ func StartHttp(port int) {
 		//}
 
 		c.JSON(http.StatusOK, command.Logger{
-
+			Id: id,
 			Logs: func() []command.Log {
 				logs := make([]command.Log, 0)
 				for _, l := range lines {
@@ -131,6 +137,7 @@ func StartHttp(port int) {
 				}
 				return logs
 			}(),
+
 			FilePath: filepath,
 			Parsed:   parsed,
 		})

@@ -13,30 +13,43 @@ function NoContent() {
 }
 
 function ProcessDrawer() {
+  const [data, setData] = React.useState(null);
   const { toggle, setToggle } = useSetting();
-  const { content } = useProcess();
+  const { setLabel, label, list } = useProcess();
+
+  const close = () => {
+    setToggle(false);
+    setLabel(null);
+  };
+
+  React.useEffect(() => {
+    if (toggle) {
+      const [i] = list.filter(i => i.label === label);
+      setData(i);
+    }
+  }, [toggle]);
 
   if (toggle) {
     return (
       <Box sx={{ p: 1, m: 2 }}>
         <Box sx={{ position: 'absolute', top: 10, right: 10 }}>
-          <IconButton onClick={() => setToggle(false)}>
+          <IconButton onClick={close}>
             <CloseIcon color="primary" />
           </IconButton>
         </Box>
 
-        {content && content.label && (
+        {data && data.label && (
           <Box sx={{ paddingTop: 1, paddingLeft: 1 }}>
             <Typography variant="h5" component="span">
-              {content.label} {content.id > 0 ? ` (${content.id})` : ''}
+              {data.label} {data.id > 0 ? ` (${data.id})` : ''}
             </Typography>
           </Box>
         )}
 
-        {content && content.id > 0 && <ProcessContent {...content} />}
+        {data && data.id > 0 && <ProcessContent {...data} />}
 
-        {!content && <NoContent />}
-        {content && content.id === 0 && <NoContent />}
+        {!data && <NoContent />}
+        {data && data.id === 0 && <NoContent />}
       </Box>
     );
   } else {

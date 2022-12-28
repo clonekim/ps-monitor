@@ -20,16 +20,11 @@ import { useSetting, useProcess } from '../store';
 
 function ProcessCard(item) {
   const { toggle, setToggle } = useSetting();
-  const { content, setContent } = useProcess();
-  const clickHandler = React.useCallback(
-    item => {
-      setContent(item);
-      setToggle(
-        toggle && (content || {}).label === item.label ? !toggle : true
-      );
-    },
-    [item]
-  );
+  const { label, setLabel } = useProcess();
+  const clickHandler = item => {
+    setLabel(item.label);
+    setToggle(toggle && label === item.label ? !toggle : true);
+  };
 
   let style = {
     width: 320,
@@ -102,7 +97,7 @@ function ProcessCard(item) {
         </Box>
 
         <IconButton size="small" onClick={() => clickHandler(item)}>
-          {toggle && (content || {}).label === item.label ? (
+          {toggle && label === item.label ? (
             <KeyboardArrowUpIcon />
           ) : (
             <KeyboardArrowDownIcon />

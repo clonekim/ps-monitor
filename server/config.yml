@@ -11,5 +11,5 @@ program:
     - Emacs,Emacs,,,
 
 logs:
-  - 0,tail -n%d /var/log/system.log | awk '$0 ~ /login/'
-  - 1,/var/log/daily.out
+  - system.log,0,tail -n%d /var/log/system.log | awk '$0 ~ /login/'
+  - daily.out,1,/var/log/daily.out

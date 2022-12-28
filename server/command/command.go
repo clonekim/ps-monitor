@@ -47,6 +47,7 @@ type Log struct {
 }
 
 type Logger struct {
+	Id       string `json:"id"`
 	Logs     []Log  `json:"logs"`
 	FilePath string `json:"filepath"`
 	Parsed   string `json:"parsed"`

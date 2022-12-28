@@ -103,7 +103,7 @@ function Log() {
           center={
             <>
               <Column
-                title={logs[value] ? logs[value].parsed : value}
+                title={logs[value] ? logs[value].id : value}
                 head
                 header={
                   <IconButton onClick={() => fetchLog(value)}>

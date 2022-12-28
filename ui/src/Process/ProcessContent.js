@@ -46,10 +46,10 @@ const columns2 = [
   { headerName: 'path', field: 'path', width: 360 },
 ];
 
-function ProcessContent() {
-  const { content } = useProcess();
+function ProcessContent({ cmdline, environment, connection, openFile }) {
+  const { label } = useProcess();
 
-  if (!content || content.id === 0) return null;
+  if (!label) return null;
 
   const kill = () => {
     alert("not working(it's demo)");
@@ -67,7 +67,7 @@ function ProcessContent() {
             center={
               <Column title="Cmdline">
                 <Grid
-                  rowData={content.cmdline.map(i => ({ value: i }))}
+                  rowData={cmdline.map(i => ({ value: i }))}
                   columns={columns}
                   height={200}
                 />
@@ -80,11 +80,7 @@ function ProcessContent() {
           <Layout
             center={
               <Column title="Environments">
-                <Grid
-                  rowData={content.environment}
-                  columns={columns0}
-                  height={200}
-                />
+                <Grid rowData={environment} columns={columns0} height={200} />
               </Column>
             }
           />
@@ -94,11 +90,7 @@ function ProcessContent() {
           <Layout
             center={
               <Column title="Connection">
-                <Grid
-                  rowData={content.connection}
-                  columns={columns1}
-                  height={200}
-                />
+                <Grid rowData={connection} columns={columns1} height={200} />
               </Column>
             }
           />
@@ -108,11 +100,7 @@ function ProcessContent() {
           <Layout
             center={
               <Column title="Open File">
-                <Grid
-                  rowData={content.openFile}
-                  columns={columns2}
-                  height={200}
-                />
+                <Grid rowData={openFile} columns={columns2} height={200} />
               </Column>
             }
           />

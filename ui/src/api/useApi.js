@@ -13,12 +13,6 @@ function useApi() {
       .then(res => {
         const list = res.data || [];
         setList(list);
-
-        if (content && content.label) {
-          list.forEach(i => {
-            if (i.label === content.label) setContent(i);
-          });
-        }
       })
       .catch(err => {
         setAlert({ text: err.message, type: 'error' });

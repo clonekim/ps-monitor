@@ -45,7 +45,7 @@ function GridWrapper({
         columnDefs={columnsDefs}
         defaultColDef={defaultColDef}
         gridOptions={gridOptions}
-        noRowsOverlayComponent={CustomOverlay}
+        //        noRowsOverlayComponent={CustomOverlay}
       />
     </div>
   );

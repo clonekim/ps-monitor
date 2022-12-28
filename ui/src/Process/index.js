@@ -24,6 +24,7 @@ function ProcessIndex() {
 
   React.useEffect(() => {
     psCommand();
+
     const timer = setInterval(() => psCommand(), timeout);
     return () => {
       clearInterval(timer);

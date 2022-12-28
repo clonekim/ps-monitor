@@ -36,9 +36,9 @@ export const useSetting = create(
 
 export const useProcess = create(set => ({
   list: [],
-  content: null,
+  label: null,
   setList: value => set({ list: value }),
-  setContent: value => set({ content: value }),
+  setLabel: value => set({ label: value }),
 }));
 
 export const useAlert = create(set => ({
